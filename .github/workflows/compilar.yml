@@ -1,4 +1,4 @@
-name: Compilar LaTeX e Publicar no Site
+name: Compilar LaTeX e Atualizar Home Page
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar codigo do repositorio
+      - name: Baixar código do repositório
         uses: actions/checkout@v4
 
       - name: Compilar todos os arquivos LaTeX em PDF
@@ -28,43 +28,252 @@ jobs:
           root_file: "*.tex"
           args: -pdf -interaction=nonstopmode -halt-on-error
 
-      - name: Organizar arquivos e criar pagina do site
+      - name: Organizar arquivos e gerar a Home Page
         run: |
           mkdir -p public
           cp *.pdf public/ 2>/dev/null || true
           
-          # Gera um index.html basico para listar os PDFs
+          # Criação da Home Page HTML estilizada
           cat << 'EOF' > public/index.html
           <!DOCTYPE html>
           <html lang="pt-BR">
           <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Cálculo 1 - Materiais didáticos</title>
+              <title>Prof. Cleibson Silva | IFPE Caruaru</title>
+              <link rel="preconnect" href="https://fonts.googleapis.com">
+              <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+              <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
               <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f6f9; color: #333; }
-                  h1 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
-                  ul { list-style-type: none; padding: 0; }
-                  li { background: #fff; margin: 10px 0; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-                  a { text-decoration: none; color: #0056b3; font-weight: bold; font-size: 1.1em; }
-                  a:hover { text-decoration: underline; }
+                  :root {
+                      --primary-green: #0f8b44;
+                      --primary-dark: #09592b;
+                      --accent-blue: #0284c7;
+                      --bg-gray: #f8fafc;
+                      --card-bg: #ffffff;
+                      --text-main: #1e293b;
+                      --text-muted: #64748b;
+                      --border-color: #e2e8f0;
+                  }
+                  
+                  * {
+                      box-sizing: border-box;
+                      margin: 0;
+                      padding: 0;
+                  }
+
+                  body {
+                      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                      background-color: var(--bg-gray);
+                      color: var(--text-main);
+                      line-height: 1.6;
+                      min-height: 100vh;
+                      display: flex;
+                      flex-direction: column;
+                  }
+
+                  header {
+                      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-green) 100%);
+                      color: white;
+                      padding: 50px 20px 60px 20px;
+                      text-align: center;
+                      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                  }
+
+                  header h1 {
+                      font-size: 2.4rem;
+                      font-weight: 700;
+                      letter-spacing: -0.02em;
+                      margin-bottom: 6px;
+                  }
+
+                  header p.subtitle {
+                      font-size: 1.15rem;
+                      font-weight: 300;
+                      opacity: 0.95;
+                  }
+
+                  header p.campus {
+                      display: inline-block;
+                      margin-top: 12px;
+                      background: rgba(255, 255, 255, 0.15);
+                      padding: 4px 14px;
+                      border-radius: 20px;
+                      font-size: 0.85rem;
+                      font-weight: 600;
+                      letter-spacing: 0.03em;
+                      text-transform: uppercase;
+                  }
+
+                  main.container {
+                      max-width: 960px;
+                      width: 100%;
+                      margin: -30px auto 40px auto;
+                      padding: 0 20px;
+                      flex: 1;
+                  }
+
+                  .card {
+                      background: var(--card-bg);
+                      border-radius: 12px;
+                      padding: 28px;
+                      margin-bottom: 24px;
+                      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+                      border: 1px solid var(--border-color);
+                  }
+
+                  .card h2 {
+                      font-size: 1.35rem;
+                      color: var(--primary-dark);
+                      margin-bottom: 16px;
+                      display: flex;
+                      align-items: center;
+                      gap: 10px;
+                      border-bottom: 2px solid #f1f5f9;
+                      padding-bottom: 10px;
+                  }
+
+                  .card p {
+                      color: var(--text-muted);
+                      font-size: 0.98rem;
+                  }
+
+                  /* Grid de Lista de PDFs */
+                  .pdf-grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                      gap: 16px;
+                      margin-top: 15px;
+                  }
+
+                  .pdf-card {
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      background: #f8fafc;
+                      border: 1px solid var(--border-color);
+                      border-radius: 8px;
+                      padding: 16px 18px;
+                      text-decoration: none;
+                      color: var(--text-main);
+                      transition: all 0.25s ease;
+                  }
+
+                  .pdf-card:hover {
+                      border-color: var(--primary-green);
+                      background: #ffffff;
+                      transform: translateY(-2px);
+                      box-shadow: 0 6px 16px rgba(15, 139, 68, 0.08);
+                  }
+
+                  .pdf-info {
+                      display: flex;
+                      align-items: center;
+                      gap: 12px;
+                      overflow: hidden;
+                  }
+
+                  .pdf-icon {
+                      font-size: 1.5rem;
+                      flex-shrink: 0;
+                  }
+
+                  .pdf-name {
+                      font-weight: 600;
+                      font-size: 0.95rem;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                  }
+
+                  .btn-download {
+                      background-color: var(--primary-green);
+                      color: white;
+                      font-size: 0.75rem;
+                      font-weight: 700;
+                      padding: 6px 12px;
+                      border-radius: 6px;
+                      text-transform: uppercase;
+                      letter-spacing: 0.05em;
+                      flex-shrink: 0;
+                      transition: background 0.2s;
+                  }
+
+                  .pdf-card:hover .btn-download {
+                      background-color: var(--primary-dark);
+                  }
+
+                  .empty-msg {
+                      color: var(--text-muted);
+                      font-style: italic;
+                      font-size: 0.95rem;
+                  }
+
+                  footer {
+                      background: #ffffff;
+                      border-top: 1px solid var(--border-color);
+                      text-align: center;
+                      padding: 24px;
+                      color: var(--text-muted);
+                      font-size: 0.88rem;
+                  }
+
+                  footer p { margin: 2px 0; }
               </style>
           </head>
           <body>
-              <h1>Cálculo 1 - Materiais Acadêmicos</h1>
-              <p>Clique no arquivo abaixo para visualizar/baixar o PDF:</p>
-              <ul>
+
+              <header>
+                  <h1>Prof. Cleibson Silva</h1>
+                  <p class="subtitle">Licenciatura em Matemática e Cursos Técnicos</p>
+                  <p class="campus">IFPE — Campus Caruaru</p>
+              </header>
+
+              <main class="container">
+                  
+                  <!-- Card de Apresentação -->
+                  <div class="card">
+                      <h2>📌 Apresentação</h2>
+                      <p>Bem-vindo(a) à página oficial de materiais didáticos da disciplina. Abaixo você pode acessar e baixar as listas de exercícios, roteiros de aulas e avaliações atualizadas em formato PDF.</p>
+                  </div>
+
+                  <!-- Card de Materiais de Cálculo 1 -->
+                  <div class="card">
+                      <h2>📐 Materiais Didáticos — Cálculo 1</h2>
+                      <div class="pdf-grid">
           EOF
 
+          # Insere os arquivos PDF compilados dinamicamente no grid
+          count=0
           for f in public/*.pdf; do
               if [ -f "$f" ]; then
                   filename=$(basename "$f")
-                  echo "        <li>📄 <a href=\"$filename\" target=\"_blank\">$filename</a></li>" >> public/index.html
+                  echo "                          <a href=\"$filename\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
+                  echo "                              <div class=\"pdf-info\">" >> public/index.html
+                  echo "                                  <span class=\"pdf-icon\">📄</span>" >> public/index.html
+                  echo "                                  <span class=\"pdf-name\">$filename</span>" >> public/index.html
+                  echo "                              </div>" >> public/index.html
+                  echo "                              <span class=\"btn-download\">Abrir</span>" >> public/index.html
+                  echo "                          </a>" >> public/index.html
+                  count=$((count+1))
               fi
           done
 
+          if [ $count -eq 0 ]; then
+              echo "                          <p class=\"empty-msg\">Nenhum material publicado até o momento.</p>" >> public/index.html
+          fi
+
           cat << 'EOF' >> public/index.html
-              </ul>
+                      </div>
+                  </div>
+
+              </main>
+
+              <footer>
+                  <p><strong>Instituto Federal de Pernambuco — Campus Caruaru</strong></p>
+                  <p>Desenvolvido com LaTeX & GitHub Pages</p>
+              </footer>
+
           </body>
           </html>
           EOF
@@ -80,4 +289,3 @@ jobs:
       - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
