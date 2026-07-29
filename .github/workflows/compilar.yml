@@ -33,24 +33,26 @@ jobs:
             */*/*.tex
           args: -pdf -interaction=nonstopmode
 
-      - name: Organizar arquivos e gerar a Home Page Dinamica
+      - name: Organizar arquivos para a Home Page
         run: |
           mkdir -p public
           
-          # Copia PDFs mantendo pastas
-          find . -name "*.pdf" -not -path "./public/*" | while IFS= read -r pdf; do
-              dir=$(dirname "$pdf" | sed 's|^\./||')
-              filename=$(basename "$pdf")
-              if [ "$dir" = "." ]; then
-                  mkdir -p "public/Geral"
-                  cp "$pdf" "public/Geral/$filename"
-              else
-                  mkdir -p "public/$dir"
-                  cp "$pdf" "public/$dir/$filename"
+          # Procura PDFs dentro de subpastas e copia mantendo o nome da disciplina
+          find . -mindepth 2 -name "*.pdf" -not -path "./public/*" -not -path "./.git/*" | while IFS= read -r pdf; do
+              # Pega a pasta pai real do arquivo
+              dir=$(echo "$pdf" | cut -d'/' -f2)
+              
+              # Ignora pastas de compilação ou de sistema
+              if [[ "$dir" == *"build"* ]] || [[ "$dir" == .* ]]; then
+                  continue
               fi
+              
+              filename=$(basename "$pdf")
+              mkdir -p "public/$dir"
+              cp "$pdf" "public/$dir/$filename"
           done
 
-          # Gera o index.html usando o script auxiliar
+          # Executa o gerador de HTML
           bash .github/gerar_html.sh
 
       - name: Configurar Pages
