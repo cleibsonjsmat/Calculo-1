@@ -170,7 +170,8 @@ cat << 'HEADER_END' > "$HTML_FILE"
             <div class="tabs-nav" id="tabs-header">
 HEADER_END
 
-# Gerar botões de abas dinamicamente
+
+# Gerar botões das abas com ícones personalizados
 first=true
 count=0
 for folder in public/*/; do
@@ -183,15 +184,38 @@ for folder in public/*/; do
 
         count=$((count + 1))
         tab_id="tab_${count}"
+
+        # === AQUI COMEÇAM OS ÍCONES (Linha ~105) ===
+        case "$foldername" in
+            "Cálculo 1"|"Cálculo 2"|"Calculo 1"|"Calculo 2")
+                icon="📐"
+                ;;
+            "Matemática 6"|"Matematica 6")
+                icon="🔢"
+                ;;
+            "Álgebra Linear"|"Algebra Linear")
+                icon="🧮"
+                ;;
+            "Física")
+                icon="⚡"
+                ;;
+            *)
+                icon="📁" # Ícone padrão para outras pastas
+                ;;
+        esac
+        # === FIM DA SEÇÃO DOS ÍCONES (Linha ~125) ===
         
         if [ "$first" = true ]; then
-            echo "                <button class=\"tab-btn active\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> "$HTML_FILE"
+            echo "                <button class=\"tab-btn active\" onclick=\"openTab(event, '$tab_id')\">$icon $foldername</button>" >> "$HTML_FILE"
             first=false
         else
-            echo "                <button class=\"tab-btn\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> "$HTML_FILE"
+            echo "                <button class=\"tab-btn\" onclick=\"openTab(event, '$tab_id')\">$icon $foldername</button>" >> "$HTML_FILE"
         fi
     fi
 done
+
+
+
 
 echo "            </div>" >> "$HTML_FILE"
 
