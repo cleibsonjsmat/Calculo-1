@@ -1,4 +1,4 @@
-name: Compilar LaTeX e Atualizar Home Page
+name: Compilar LaTeX e Gerar Abas Dinamicas
 
 on:
   push:
@@ -28,19 +28,24 @@ jobs:
           root_file: "**/*.tex"
           args: -pdf -interaction=nonstopmode -halt-on-error
 
-      - name: Organizar estrutura e gerar a Home Page
+      - name: Organizar arquivos e gerar a Home Page Dinamica
         run: |
           mkdir -p public
           
-          # Copia arquivos PDF mantendo a estrutura de diretórios ou soltos na raiz
-          find . -maxdepth 3 -name "*.pdf" -not -path "./public/*" -exec cp --parents {} public/ \;
-          
-          # Ajusta caminhos para mover os PDFs para dentro de public/
-          cd public
-          # Se os PDFs foram copiados preservando caminho relativo (ex: ./Calculo-1/Lista.pdf), mantem a pasta
-          cd ..
+          # Copia todos os PDFs mantendo a estrutura exata das pastas do PC
+          find . -name "*.pdf" -not -path "./public/*" | while read -r pdf; do
+              dir=$(dirname "$pdf" | sed 's|^\./||')
+              filename=$(basename "$pdf")
+              if [ "$dir" = "." ]; then
+                  mkdir -p "public/Geral"
+                  cp "$pdf" "public/Geral/$filename"
+              else
+                  mkdir -p "public/$dir"
+                  cp "$pdf" "public/$dir/$filename"
+              fi
+          done
 
-          # Gera a Home Page HTML com abas interativas
+          # Início do HTML
           cat << 'EOF' > public/index.html
           <!DOCTYPE html>
           <html lang="pt-BR">
@@ -158,11 +163,9 @@ jobs:
                       background: #ffffff;
                   }
 
-                  /* Conteúdo das Abas */
                   .tab-content { display: none; }
                   .tab-content.active { display: block; }
 
-                  /* Grid de PDFs */
                   .pdf-grid {
                       display: grid;
                       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -236,93 +239,63 @@ jobs:
                   
                   <div class="card">
                       <h2>📌 Apresentação</h2>
-                      <p>Selecione a disciplina abaixo para visualizar as listas de exercícios, roteiros e materiais didáticos atualizados.</p>
+                      <p>Selecione a disciplina abaixo para visualizar as listas de exercícios, roteiros e materiais didáticos em PDF.</p>
                   </div>
 
                   <div class="card">
-                      <!-- Navegação das Abas -->
-                      <div class="tabs-nav">
-                          <button class="tab-btn active" onclick="openTab(event, 'calc1')">📐 Cálculo 1</button>
-                          <button class="tab-btn" onclick="openTab(event, 'calc2')">📊 Cálculo 2</button>
-                          <button class="tab-btn" onclick="openTab(event, 'mat3')">✏️ Matemática Geral</button>
-                      </div>
+                      <div class="tabs-nav" id="tabs-header">
+EOF
 
-                      <!-- Conteúdo Aba 1: Cálculo 1 -->
-                      <div id="calc1" class="tab-content active">
-                          <div class="pdf-grid">
-          EOF
-
-          # Adiciona PDFs de Cálculo 1 (ou da raiz)
-          count1=0
-          for f in public/*.pdf public/CALCULO-1/*.pdf public/Calculo-1/*.pdf; do
-              if [ -f "$f" ]; then
-                  relpath=$(echo "$f" | sed 's|^public/||')
-                  filename=$(basename "$f")
-                  echo "                              <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
-                  echo "                                  <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
-                  echo "                                  <span class=\"btn-download\">Abrir</span>" >> public/index.html
-                  echo "                              </a>" >> public/index.html
-                  count1=$((count1+1))
+          # Cria as abas de forma dinamica baseada nos diretorios que contem PDFs
+          first=true
+          for folder in public/*/; do
+              if [ -d "$folder" ]; then
+                  foldername=$(basename "$folder")
+                  tab_id=$(echo "$foldername" | iconv -t ascii//TRANSLIT | sed -e 's/[^a-zA-Z0-9]/_/g')
+                  
+                  if [ "$first" = true ]; then
+                      echo "                          <button class=\"tab-btn active\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> public/index.html
+                      first=false
+                  else
+                      echo "                          <button class=\"tab-btn\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> public/index.html
+                  fi
               fi
           done
-          if [ $count1 -eq 0 ]; then
-              echo "                              <p style=\"color: var(--text-muted);\">Nenhum material publicado nesta disciplina.</p>" >> public/index.html
-          fi
 
           cat << 'EOF' >> public/index.html
-                          </div>
                       </div>
+EOF
 
-                      <!-- Conteúdo Aba 2: Cálculo 2 -->
-                      <div id="calc2" class="tab-content">
-                          <div class="pdf-grid">
-          EOF
+          # Cria o conteudo de cada aba dinamica
+          first=true
+          for folder in public/*/; do
+              if [ -d "$folder" ]; then
+                  foldername=$(basename "$folder")
+                  tab_id=$(echo "$foldername" | iconv -t ascii//TRANSLIT | sed -e 's/[^a-zA-Z0-9]/_/g')
+                  
+                  if [ "$first" = true ]; then
+                      echo "                      <div id=\"$tab_id\" class=\"tab-content active\"><div class=\"pdf-grid\">" >> public/index.html
+                      first=false
+                  else
+                      echo "                      <div id=\"$tab_id\" class=\"tab-content\"><div class=\"pdf-grid\">" >> public/index.html
+                  fi
 
-          count2=0
-          for f in public/CALCULO-2/*.pdf public/Calculo-2/*.pdf; do
-              if [ -f "$f" ]; then
-                  relpath=$(echo "$f" | sed 's|^public/||')
-                  filename=$(basename "$f")
-                  echo "                              <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/info.html
-                  echo "                                  <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
-                  echo "                                  <span class=\"btn-download\">Abrir</span>" >> public/index.html
-                  echo "                              </a>" >> public/index.html
-                  count2=$((count2+1))
+                  for pdf in "$folder"*.pdf; do
+                      if [ -f "$pdf" ]; then
+                          relpath=$(echo "$pdf" | sed 's|^public/||')
+                          filename=$(basename "$pdf")
+                          echo "                          <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
+                          echo "                              <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
+                          echo "                              <span class=\"btn-download\">Abrir</span>" >> public/index.html
+                          echo "                          </a>" >> public/index.html
+                      fi
+                  done
+
+                  echo "                      </div></div>" >> public/index.html
               fi
           done
-          if [ $count2 -eq 0 ]; then
-              echo "                              <p style=\"color: var(--text-muted);\">Nenhum material publicado nesta disciplina.</p>" >> public/index.html
-          fi
 
           cat << 'EOF' >> public/index.html
-                          </div>
-                      </div>
-
-                      <!-- Conteúdo Aba 3: Matemática Geral -->
-                      <div id="mat3" class="tab-content">
-                          <div class="pdf-grid">
-          EOF
-
-          count3=0
-          for f in public/MATEMATICA/*.pdf public/Matematica/*.pdf; do
-              if [ -f "$f" ]; then
-                  relpath=$(echo "$f" | sed 's|^public/||')
-                  filename=$(basename "$f")
-                  echo "                              <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
-                  echo "                                  <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
-                  echo "                                  <span class=\"btn-download\">Abrir</span>" >> public/index.html
-                  echo "                              </a>" >> public/index.html
-                  count3=$((count3+1))
-              fi
-          done
-          if [ $count3 -eq 0 ]; then
-              echo "                              <p style=\"color: var(--text-muted);\">Nenhum material publicado nesta disciplina.</p>" >> public/index.html
-          fi
-
-          cat << 'EOF' >> public/index.html
-                          </div>
-                      </div>
-
                   </div>
 
               </main>
