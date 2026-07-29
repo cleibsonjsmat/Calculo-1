@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Início da construção do index.html
-cat << 'EOF' > public/index.html
+HTML_FILE="public/index.html"
+
+# Escreve o cabeçalho e os estilos do HTML
+cat << 'HEADER_END' > "$HTML_FILE"
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -166,81 +168,71 @@ cat << 'EOF' > public/index.html
         </div>
         <div class="card">
             <div class="tabs-nav" id="tabs-header">
-EOF
+HEADER_END
 
-# Gerar botões das abas
+# Gerar botões de abas dinamicamente
 first=true
+count=0
 for folder in public/*/; do
     if [ -d "$folder" ]; then
         foldername=$(basename "$folder")
-        
-        # Filtra pastas inválidas ou vazias
-        if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then
-            continue
-        fi
+        if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then continue; fi
 
         pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
-        if [ "$pdf_count" -eq 0 ]; then
-            continue
-        fi
+        if [ "$pdf_count" -eq 0 ]; then continue; fi
 
-        tab_id=$(echo "$foldername" | iconv -t ascii//TRANSLIT 2>/dev/null | sed -e 's/[^a-zA-Z0-9]/_/g')
-        if [ -z "$tab_id" ]; then tab_id="folder_$(date +%s)"; fi
+        count=$((count + 1))
+        tab_id="tab_${count}"
         
         if [ "$first" = true ]; then
-            echo "                <button class=\"tab-btn active\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> public/index.html
+            echo "                <button class=\"tab-btn active\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> "$HTML_FILE"
             first=false
         else
-            echo "                <button class=\"tab-btn\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> public/index.html
+            echo "                <button class=\"tab-btn\" onclick=\"openTab(event, '$tab_id')\">📁 $foldername</button>" >> "$HTML_FILE"
         fi
     fi
 done
 
-cat << 'EOF' >> public/index.html
-            </div>
-EOF
+echo "            </div>" >> "$HTML_FILE"
 
-# Gerar conteúdo de cada aba
+# Gerar conteúdo de cada aba com os PDFs
 first=true
+count=0
 for folder in public/*/; do
     if [ -d "$folder" ]; then
         foldername=$(basename "$folder")
-
-        if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then
-            continue
-        fi
+        if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then continue; fi
 
         pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
-        if [ "$pdf_count" -eq 0 ]; then
-            continue
-        fi
+        if [ "$pdf_count" -eq 0 ]; then continue; fi
 
-        tab_id=$(echo "$foldername" | iconv -t ascii//TRANSLIT 2>/dev/null | sed -e 's/[^a-zA-Z0-9]/_/g')
-        if [ -z "$tab_id" ]; then tab_id="folder_$(date +%s)"; fi
+        count=$((count + 1))
+        tab_id="tab_${count}"
         
         if [ "$first" = true ]; then
-            echo "            <div id=\"$tab_id\" class=\"tab-content active\"><div class=\"pdf-grid\">" >> public/index.html
+            echo "            <div id=\"$tab_id\" class=\"tab-content active\"><div class=\"pdf-grid\">" >> "$HTML_FILE"
             first=false
         else
-            echo "            <div id=\"$tab_id\" class=\"tab-content\"><div class=\"pdf-grid\">" >> public/index.html
+            echo "            <div id=\"$tab_id\" class=\"tab-content\"><div class=\"pdf-grid\">" >> "$HTML_FILE"
         fi
 
         find "$folder" -name "*.pdf" | while IFS= read -r pdf; do
             if [ -f "$pdf" ]; then
                 relpath=$(echo "$pdf" | sed 's|^public/||')
                 filename=$(basename "$pdf")
-                echo "                <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
-                echo "                    <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
-                echo "                    <span class=\"btn-download\">Abrir</span>" >> public/index.html
-                echo "                </a>" >> public/index.html
+                echo "                <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> "$HTML_FILE"
+                echo "                    <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> "$HTML_FILE"
+                echo "                    <span class=\"btn-download\">Abrir</span>" >> "$HTML_FILE"
+                echo "                </a>" >> "$HTML_FILE"
             fi
         done
 
-        echo "            </div></div>" >> public/index.html
+        echo "            </div></div>" >> "$HTML_FILE"
     fi
 done
 
-cat << 'EOF' >> public/index.html
+# Escreve o rodapé e o Javascript do HTML
+cat << 'FOOTER_END' >> "$HTML_FILE"
         </div>
     </main>
     <footer>
@@ -266,4 +258,4 @@ cat << 'EOF' >> public/index.html
     </script>
 </body>
 </html>
-EOF
+FOOTER_END
