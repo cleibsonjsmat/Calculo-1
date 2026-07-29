@@ -23,7 +23,7 @@ jobs:
       - name: Baixar código do repositório
         uses: actions/checkout@v4
 
-      - name: Compilar arquivos LaTeX em PDF
+      - name: Compilar arquivos LaTeX individualmente
         uses: xu-cheng/latex-action@v3
         continue-on-error: true
         with:
@@ -31,25 +31,35 @@ jobs:
             *.tex
             */*.tex
             */*/*.tex
+          work_in_root_file_dir: true
           args: -pdf -interaction=nonstopmode
 
-      - name: Organizar arquivos para a Home Page
+      - name: Organizar PDFs nas pastas do Public
         run: |
           mkdir -p public
 
-          # Mapeia todas as pastas do projeto (exceto .git, .github, public e *build)
+          # Procura todas as pastas de disciplinas da raiz (ex: Cálculo 1, Matemática 6)
           find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
               dir_name=$(basename "$dir_path")
               
-              # Procura arquivos .pdf gerados dentro desta disciplina (incluindo subpastas build)
+              # Procura arquivos .pdf dentro da disciplina (incluindo subpastas build)
               find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
                   filename=$(basename "$pdf")
                   
-                  # Copia o PDF para public/NOME_DA_DISCIPLINA
+                  # Copia para a estrutura pública
                   mkdir -p "public/$dir_name"
                   cp "$pdf" "public/$dir_name/$filename"
+                  echo "Copiado: $pdf -> public/$dir_name/$filename"
               done
           done
+
+          # Mostra a estrutura gerada no log para diagnóstico
+          echo "=== Conteúdo da pasta public ==="
+          ls -R public/
+
+          # Corrige quebras de linha de Windows (CRLF -> LF) e dá permissão de execução
+          sed -i 's/\r$//' .github/gerar_html.sh
+          chmod +x .github/gerar_html.sh
 
           # Executa o gerador do index.html
           bash .github/gerar_html.sh
