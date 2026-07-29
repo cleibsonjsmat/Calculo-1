@@ -36,30 +36,22 @@ jobs:
       - name: Organizar arquivos para a Home Page
         run: |
           mkdir -p public
-          
-          # Procura todos os PDFs gerados no repositório
-          find . -name "*.pdf" -not -path "./public/*" -not -path "./.git/*" | while IFS= read -r pdf; do
-              # Extrai o caminho sem o prefixo ./
-              rel_path=$(echo "$pdf" | sed 's|^\./||')
+
+          # Mapeia todas as pastas do projeto (exceto .git, .github, public e *build)
+          find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
+              dir_name=$(basename "$dir_path")
               
-              # Pega a primeira pasta do caminho (nome da disciplina)
-              discipline=$(echo "$rel_path" | cut -d'/' -f1)
-              filename=$(basename "$pdf")
-              
-              # Ignora arquivos que estejam soltos na raiz ou em pastas do sistema
-              if [ "$discipline" = "$filename" ] || [[ "$discipline" == .* ]] || [ "$discipline" = "public" ]; then
-                  continue
-              fi
-              
-              # Limpa o sufixo 'build' caso o nome da disciplina tenha pegado 'build'
-              clean_discipline=$(echo "$discipline" | sed 's|build$||')
-              
-              # Copia o PDF para a pasta limpa da disciplina dentro do public
-              mkdir -p "public/$clean_discipline"
-              cp "$pdf" "public/$clean_discipline/$filename"
+              # Procura arquivos .pdf gerados dentro desta disciplina (incluindo subpastas build)
+              find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
+                  filename=$(basename "$pdf")
+                  
+                  # Copia o PDF para public/NOME_DA_DISCIPLINA
+                  mkdir -p "public/$dir_name"
+                  cp "$pdf" "public/$dir_name/$filename"
+              done
           done
 
-          # Executa o gerador de HTML
+          # Executa o gerador do index.html
           bash .github/gerar_html.sh
 
       - name: Configurar Pages
