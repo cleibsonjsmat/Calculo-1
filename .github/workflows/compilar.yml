@@ -25,15 +25,22 @@ jobs:
       - name: Compilar todos os arquivos LaTeX em PDF
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: "*.tex"
+          root_file: "**/*.tex"
           args: -pdf -interaction=nonstopmode -halt-on-error
 
-      - name: Organizar arquivos e gerar a Home Page
+      - name: Organizar estrutura e gerar a Home Page
         run: |
           mkdir -p public
-          cp *.pdf public/ 2>/dev/null || true
           
-          # Criação da Home Page HTML estilizada
+          # Copia arquivos PDF mantendo a estrutura de diretórios ou soltos na raiz
+          find . -maxdepth 3 -name "*.pdf" -not -path "./public/*" -exec cp --parents {} public/ \;
+          
+          # Ajusta caminhos para mover os PDFs para dentro de public/
+          cd public
+          # Se os PDFs foram copiados preservando caminho relativo (ex: ./Calculo-1/Lista.pdf), mantem a pasta
+          cd ..
+
+          # Gera a Home Page HTML com abas interativas
           cat << 'EOF' > public/index.html
           <!DOCTYPE html>
           <html lang="pt-BR">
@@ -43,12 +50,11 @@ jobs:
               <title>Prof. Cleibson Silva | IFPE Caruaru</title>
               <link rel="preconnect" href="https://fonts.googleapis.com">
               <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-              <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+              <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
               <style>
                   :root {
                       --primary-green: #0f8b44;
                       --primary-dark: #09592b;
-                      --accent-blue: #0284c7;
                       --bg-gray: #f8fafc;
                       --card-bg: #ffffff;
                       --text-main: #1e293b;
@@ -56,11 +62,7 @@ jobs:
                       --border-color: #e2e8f0;
                   }
                   
-                  * {
-                      box-sizing: border-box;
-                      margin: 0;
-                      padding: 0;
-                  }
+                  * { box-sizing: border-box; margin: 0; padding: 0; }
 
                   body {
                       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -75,24 +77,13 @@ jobs:
                   header {
                       background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-green) 100%);
                       color: white;
-                      padding: 50px 20px 60px 20px;
+                      padding: 45px 20px 55px 20px;
                       text-align: center;
                       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
                   }
 
-                  header h1 {
-                      font-size: 2.4rem;
-                      font-weight: 700;
-                      letter-spacing: -0.02em;
-                      margin-bottom: 6px;
-                  }
-
-                  header p.subtitle {
-                      font-size: 1.15rem;
-                      font-weight: 300;
-                      opacity: 0.95;
-                  }
-
+                  header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 6px; }
+                  header p.subtitle { font-size: 1.1rem; font-weight: 300; opacity: 0.95; }
                   header p.campus {
                       display: inline-block;
                       margin-top: 12px;
@@ -101,14 +92,14 @@ jobs:
                       border-radius: 20px;
                       font-size: 0.85rem;
                       font-weight: 600;
-                      letter-spacing: 0.03em;
                       text-transform: uppercase;
+                      letter-spacing: 0.03em;
                   }
 
                   main.container {
-                      max-width: 960px;
+                      max-width: 900px;
                       width: 100%;
-                      margin: -30px auto 40px auto;
+                      margin: -25px auto 40px auto;
                       padding: 0 20px;
                       flex: 1;
                   }
@@ -116,34 +107,66 @@ jobs:
                   .card {
                       background: var(--card-bg);
                       border-radius: 12px;
-                      padding: 28px;
+                      padding: 26px;
                       margin-bottom: 24px;
                       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
                       border: 1px solid var(--border-color);
                   }
 
                   .card h2 {
-                      font-size: 1.35rem;
+                      font-size: 1.3rem;
                       color: var(--primary-dark);
-                      margin-bottom: 16px;
-                      display: flex;
-                      align-items: center;
-                      gap: 10px;
+                      margin-bottom: 12px;
                       border-bottom: 2px solid #f1f5f9;
-                      padding-bottom: 10px;
+                      padding-bottom: 8px;
                   }
 
-                  .card p {
+                  .card p { color: var(--text-muted); font-size: 0.98rem; }
+
+                  /* Navegação por Abas (Tabs) */
+                  .tabs-nav {
+                      display: flex;
+                      gap: 8px;
+                      border-bottom: 2px solid var(--border-color);
+                      margin-bottom: 20px;
+                      overflow-x: auto;
+                      padding-bottom: 4px;
+                  }
+
+                  .tab-btn {
+                      background: none;
+                      border: none;
+                      padding: 10px 18px;
+                      font-family: inherit;
+                      font-size: 0.95rem;
+                      font-weight: 600;
                       color: var(--text-muted);
-                      font-size: 0.98rem;
+                      cursor: pointer;
+                      border-radius: 6px 6px 0 0;
+                      transition: all 0.2s;
+                      white-space: nowrap;
                   }
 
-                  /* Grid de Lista de PDFs */
+                  .tab-btn:hover {
+                      color: var(--primary-green);
+                      background: #f1f5f9;
+                  }
+
+                  .tab-btn.active {
+                      color: var(--primary-green);
+                      border-bottom: 3px solid var(--primary-green);
+                      background: #ffffff;
+                  }
+
+                  /* Conteúdo das Abas */
+                  .tab-content { display: none; }
+                  .tab-content.active { display: block; }
+
+                  /* Grid de PDFs */
                   .pdf-grid {
                       display: grid;
-                      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                      gap: 16px;
-                      margin-top: 15px;
+                      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                      gap: 14px;
                   }
 
                   .pdf-card {
@@ -153,34 +176,29 @@ jobs:
                       background: #f8fafc;
                       border: 1px solid var(--border-color);
                       border-radius: 8px;
-                      padding: 16px 18px;
+                      padding: 14px 16px;
                       text-decoration: none;
                       color: var(--text-main);
-                      transition: all 0.25s ease;
+                      transition: all 0.2s ease;
                   }
 
                   .pdf-card:hover {
                       border-color: var(--primary-green);
                       background: #ffffff;
                       transform: translateY(-2px);
-                      box-shadow: 0 6px 16px rgba(15, 139, 68, 0.08);
+                      box-shadow: 0 4px 12px rgba(15, 139, 68, 0.08);
                   }
 
                   .pdf-info {
                       display: flex;
                       align-items: center;
-                      gap: 12px;
+                      gap: 10px;
                       overflow: hidden;
-                  }
-
-                  .pdf-icon {
-                      font-size: 1.5rem;
-                      flex-shrink: 0;
                   }
 
                   .pdf-name {
                       font-weight: 600;
-                      font-size: 0.95rem;
+                      font-size: 0.92rem;
                       white-space: nowrap;
                       overflow: hidden;
                       text-overflow: ellipsis;
@@ -189,82 +207,122 @@ jobs:
                   .btn-download {
                       background-color: var(--primary-green);
                       color: white;
-                      font-size: 0.75rem;
+                      font-size: 0.72rem;
                       font-weight: 700;
-                      padding: 6px 12px;
-                      border-radius: 6px;
+                      padding: 5px 10px;
+                      border-radius: 4px;
                       text-transform: uppercase;
-                      letter-spacing: 0.05em;
-                      flex-shrink: 0;
-                      transition: background 0.2s;
-                  }
-
-                  .pdf-card:hover .btn-download {
-                      background-color: var(--primary-dark);
-                  }
-
-                  .empty-msg {
-                      color: var(--text-muted);
-                      font-style: italic;
-                      font-size: 0.95rem;
                   }
 
                   footer {
                       background: #ffffff;
                       border-top: 1px solid var(--border-color);
                       text-align: center;
-                      padding: 24px;
+                      padding: 20px;
                       color: var(--text-muted);
-                      font-size: 0.88rem;
+                      font-size: 0.85rem;
                   }
-
-                  footer p { margin: 2px 0; }
               </style>
           </head>
           <body>
 
               <header>
                   <h1>Prof. Cleibson Silva</h1>
-                  <p class="subtitle">Bacharelado em Engenharia Mecânica Cursos Técnicos</p>
+                  <p class="subtitle">Licenciatura em Matemática e Cursos Técnicos</p>
                   <p class="campus">IFPE — Campus Caruaru</p>
               </header>
 
               <main class="container">
                   
-                  <!-- Card de Apresentação -->
                   <div class="card">
                       <h2>📌 Apresentação</h2>
-                      <p>Bem-vindo(a) à página oficial de materiais didáticos da disciplina. Abaixo você pode acessar e baixar as listas de exercícios, roteiros de aulas e avaliações atualizadas em formato PDF.</p>
+                      <p>Selecione a disciplina abaixo para visualizar as listas de exercícios, roteiros e materiais didáticos atualizados.</p>
                   </div>
 
-                  <!-- Card de Materiais de Cálculo 1 -->
                   <div class="card">
-                      <h2>📐 Materiais Didáticos — Cálculo 1</h2>
-                      <div class="pdf-grid">
+                      <!-- Navegação das Abas -->
+                      <div class="tabs-nav">
+                          <button class="tab-btn active" onclick="openTab(event, 'calc1')">📐 Cálculo 1</button>
+                          <button class="tab-btn" onclick="openTab(event, 'calc2')">📊 Cálculo 2</button>
+                          <button class="tab-btn" onclick="openTab(event, 'mat3')">✏️ Matemática Geral</button>
+                      </div>
+
+                      <!-- Conteúdo Aba 1: Cálculo 1 -->
+                      <div id="calc1" class="tab-content active">
+                          <div class="pdf-grid">
           EOF
 
-          # Insere os arquivos PDF compilados dinamicamente no grid
-          count=0
-          for f in public/*.pdf; do
+          # Adiciona PDFs de Cálculo 1 (ou da raiz)
+          count1=0
+          for f in public/*.pdf public/CALCULO-1/*.pdf public/Calculo-1/*.pdf; do
               if [ -f "$f" ]; then
+                  relpath=$(echo "$f" | sed 's|^public/||')
                   filename=$(basename "$f")
-                  echo "                          <a href=\"$filename\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
-                  echo "                              <div class=\"pdf-info\">" >> public/index.html
-                  echo "                                  <span class=\"pdf-icon\">📄</span>" >> public/index.html
-                  echo "                                  <span class=\"pdf-name\">$filename</span>" >> public/index.html
-                  echo "                              </div>" >> public/index.html
-                  echo "                              <span class=\"btn-download\">Abrir</span>" >> public/index.html
-                  echo "                          </a>" >> public/index.html
-                  count=$((count+1))
+                  echo "                              <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
+                  echo "                                  <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
+                  echo "                                  <span class=\"btn-download\">Abrir</span>" >> public/index.html
+                  echo "                              </a>" >> public/index.html
+                  count1=$((count1+1))
               fi
           done
-
-          if [ $count -eq 0 ]; then
-              echo "                          <p class=\"empty-msg\">Nenhum material publicado até o momento.</p>" >> public/index.html
+          if [ $count1 -eq 0 ]; then
+              echo "                              <p style=\"color: var(--text-muted);\">Nenhum material publicado nesta disciplina.</p>" >> public/index.html
           fi
 
           cat << 'EOF' >> public/index.html
+                          </div>
                       </div>
+
+                      <!-- Conteúdo Aba 2: Cálculo 2 -->
+                      <div id="calc2" class="tab-content">
+                          <div class="pdf-grid">
+          EOF
+
+          count2=0
+          for f in public/CALCULO-2/*.pdf public/Calculo-2/*.pdf; do
+              if [ -f "$f" ]; then
+                  relpath=$(echo "$f" | sed 's|^public/||')
+                  filename=$(basename "$f")
+                  echo "                              <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/info.html
+                  echo "                                  <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
+                  echo "                                  <span class=\"btn-download\">Abrir</span>" >> public/index.html
+                  echo "                              </a>" >> public/index.html
+                  count2=$((count2+1))
+              fi
+          done
+          if [ $count2 -eq 0 ]; then
+              echo "                              <p style=\"color: var(--text-muted);\">Nenhum material publicado nesta disciplina.</p>" >> public/index.html
+          fi
+
+          cat << 'EOF' >> public/index.html
+                          </div>
+                      </div>
+
+                      <!-- Conteúdo Aba 3: Matemática Geral -->
+                      <div id="mat3" class="tab-content">
+                          <div class="pdf-grid">
+          EOF
+
+          count3=0
+          for f in public/MATEMATICA/*.pdf public/Matematica/*.pdf; do
+              if [ -f "$f" ]; then
+                  relpath=$(echo "$f" | sed 's|^public/||')
+                  filename=$(basename "$f")
+                  echo "                              <a href=\"$relpath\" target=\"_blank\" class=\"pdf-card\">" >> public/index.html
+                  echo "                                  <div class=\"pdf-info\"><span>📄</span><span class=\"pdf-name\">$filename</span></div>" >> public/index.html
+                  echo "                                  <span class=\"btn-download\">Abrir</span>" >> public/index.html
+                  echo "                              </a>" >> public/index.html
+                  count3=$((count3+1))
+              fi
+          done
+          if [ $count3 -eq 0 ]; then
+              echo "                              <p style=\"color: var(--text-muted);\">Nenhum material publicado nesta disciplina.</p>" >> public/index.html
+          fi
+
+          cat << 'EOF' >> public/index.html
+                          </div>
+                      </div>
+
                   </div>
 
               </main>
@@ -273,6 +331,24 @@ jobs:
                   <p><strong>Instituto Federal de Pernambuco — Campus Caruaru</strong></p>
                   <p>Desenvolvido com LaTeX & GitHub Pages</p>
               </footer>
+
+              <script>
+                  function openTab(evt, tabName) {
+                      var i, tabcontent, tablinks;
+                      tabcontent = document.getElementsByClassName("tab-content");
+                      for (i = 0; i < tabcontent.length; i++) {
+                          tabcontent[i].style.display = "none";
+                          tabcontent[i].classList.remove("active");
+                      }
+                      tablinks = document.getElementsByClassName("tab-btn");
+                      for (i = 0; i < tablinks.length; i++) {
+                          tablinks[i].classList.remove("active");
+                      }
+                      document.getElementById(tabName).style.display = "block";
+                      document.getElementById(tabName).classList.add("active");
+                      evt.currentTarget.classList.add("active");
+                  }
+              </script>
 
           </body>
           </html>
