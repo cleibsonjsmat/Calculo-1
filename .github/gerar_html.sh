@@ -56,7 +56,7 @@ echo '        </div>' >> "$HTML_FILE"
 echo '        <div class="card">' >> "$HTML_FILE"
 echo '            <div class="tabs-nav" id="tabs-header">' >> "$HTML_FILE"
 
-# 1. Gerar Botões das Disciplinas (Abas Principais)
+# 1. Gerar Botões das Disciplinas
 first=true
 count=0
 for folder in public/*/; do
@@ -112,20 +112,16 @@ for folder in public/*/; do
         fi
 
         echo "            <div id=\"$tab_id\" class=\"tab-content $active_class\" style=\"$display_style\">" >> "$HTML_FILE"
-        
-        # Filtros (Subabas) por Subpasta
         echo "                <div class=\"subtabs-nav\">" >> "$HTML_FILE"
         echo "                    <button class=\"subtab-btn active\" onclick=\"filterGroup(this, '$tab_id', 'all')\">Todos</button>" >> "$HTML_FILE"
         
-        # Cria os botões de filtro para cada subpasta existente
-        for subfolder in "$folder"*/; do
-            if [ -d "$subfolder" ]; then
+        # Mapeia todas as subpastas que possuem PDFs
+        find "$folder" -mindepth 1 -type d | while IFS= read -r subfolder; do
+            sub_pdf_count=$(find "$subfolder" -maxdepth 1 -name "*.pdf" | wc -l)
+            if [ "$sub_pdf_count" -gt 0 ]; then
                 subname=$(basename "$subfolder")
-                sub_pdf_count=$(find "$subfolder" -name "*.pdf" | wc -l)
-                if [ "$sub_pdf_count" -gt 0 ]; then
-                    group_id=$(echo "$subname" | sed -e 's/[^a-zA-Z0-9]/_/g')
-                    echo "                    <button class=\"subtab-btn\" onclick=\"filterGroup(this, '$tab_id', 'grp_$group_id')\">$subname</button>" >> "$HTML_FILE"
-                fi
+                group_id=$(echo "$subname" | sed -e 's/[^a-zA-Z0-9]/_/g')
+                echo "                    <button class=\"subtab-btn\" onclick=\"filterGroup(this, '$tab_id', 'grp_$group_id')\">$subname</button>" >> "$HTML_FILE"
             fi
         done
         echo "                </div>" >> "$HTML_FILE"
@@ -138,7 +134,6 @@ for folder in public/*/; do
                 relpath=$(echo "$pdf" | sed 's|^public/||')
                 filename=$(basename "$pdf")
                 
-                # Identifica se o arquivo está numa subpasta
                 parent_dir=$(basename "$(dirname "$pdf")")
                 group_class="grp_root"
                 if [ "$parent_dir" != "$foldername" ]; then
