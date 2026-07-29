@@ -174,12 +174,11 @@ for folder in public/*/; do
     if [ -d "$folder" ]; then
         foldername=$(basename "$folder")
         
-        # Filtra pastas inválidas
+        # Filtra pastas inválidas ou vazias
         if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then
             continue
         fi
 
-        # Verifica se há pelo menos um PDF dentro da pasta
         pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
         if [ "$pdf_count" -eq 0 ]; then
             continue
