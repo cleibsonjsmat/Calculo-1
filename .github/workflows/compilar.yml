@@ -23,36 +23,44 @@ jobs:
       - name: Baixar código do repositório
         uses: actions/checkout@v4
 
-      - name: Compilar arquivos LaTeX
-        uses: xu-cheng/latex-action@v3
-        continue-on-error: true
-        with:
-          root_file: |
-            *.tex
-            */*.tex
-            */*/*.tex
-          work_in_root_file_dir: true
-          args: -pdf -interaction=nonstopmode
+      - name: Instalar ambiente LaTeX no servidor
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-lang-portuguese texlive-fonts-recommended
 
-      - name: Organizar PDFs nas pastas do Public
+      - name: Compilar arquivos .tex e Organizar no Public
         run: |
           mkdir -p public
 
-          # Procura todas as pastas de disciplinas na raiz
+          # Varre cada pasta de disciplina
           find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
               dir_name=$(basename "$dir_path")
+              echo "--- Processando disciplina: $dir_name ---"
               
-              # Procura arquivos .pdf dentro de cada disciplina
+              # Entra na pasta da disciplina para compilar localmente
+              cd "$dir_path" || continue
+              
+              # Procura e compila cada arquivo .tex da pasta
+              find . -maxdepth 2 -name "*.tex" | while IFS= read -r texfile; do
+                  echo "Compilando: $texfile"
+                  pdflatex -interaction=nonstopmode "$texfile" || true
+              done
+              
+              # Volta para a raiz do repositório
+              cd - > /dev/null
+
+              # Copia todos os PDFs gerados para a pasta public/NOME_DA_DISCIPLINA
               find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
                   filename=$(basename "$pdf")
-                  
-                  # Copia para public/NOME_DA_DISCIPLINA
                   mkdir -p "public/$dir_name"
                   cp "$pdf" "public/$dir_name/$filename"
+                  echo "Copiado para o site: public/$dir_name/$filename"
               done
           done
 
-          # Executa o gerador de HTML com o bash explicitamente
+          # Ajusta o script do HTML e executa
+          sed -i 's/\r$//' .github/gerar_html.sh
+          chmod +x .github/gerar_html.sh
           bash .github/gerar_html.sh
 
       - name: Configurar Pages
