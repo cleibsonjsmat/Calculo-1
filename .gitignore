@@ -1,4 +1,8 @@
+# Ignorar qualquer pasta que termine em build
 *build/
+*build/**
+
+# Ignorar arquivos temporários do LaTeX
 *.aux
 *.log
 *.out
