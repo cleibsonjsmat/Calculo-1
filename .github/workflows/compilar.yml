@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,20 +23,21 @@ jobs:
       - name: Baixar código do repositório
         uses: actions/checkout@v4
 
-      - name: Compilar todos os arquivos LaTeX em PDF
+      - name: Compilar arquivos LaTeX em PDF
         uses: xu-cheng/latex-action@v3
+        continue-on-error: true
         with:
           root_file: |
             *.tex
             */*.tex
             */*/*.tex
-          args: -pdf -interaction=nonstopmode -halt-on-error
+          args: -pdf -interaction=nonstopmode
 
       - name: Organizar arquivos e gerar a Home Page Dinamica
         run: |
           mkdir -p public
           
-          # Copia os PDFs mantendo a estrutura exata das subpastas
+          # Copia os PDFs gerados mantendo a estrutura de pastas
           find . -name "*.pdf" -not -path "./public/*" | while IFS= read -r pdf; do
               dir=$(dirname "$pdf" | sed 's|^\./||')
               filename=$(basename "$pdf")
@@ -48,7 +50,7 @@ jobs:
               fi
           done
 
-          # Estrutura HTML da Home Page
+          # 1. Início da construção da página HTML
           cat << 'EOF' > public/index.html
           <!DOCTYPE html>
           <html lang="pt-BR">
@@ -216,7 +218,7 @@ jobs:
                       <div class="tabs-nav" id="tabs-header">
 EOF
 
-          # Criação das abas
+          # 2. Criação dos botões das Abas
           first=true
           for folder in public/*/; do
               if [ -d "$folder" ]; then
@@ -233,11 +235,12 @@ EOF
               fi
           done
 
+          # 3. Transição de cabeçalho das abas para o conteúdo
           cat << 'EOF' >> public/index.html
                       </div>
 EOF
 
-          # Conteúdo de cada aba
+          # 4. Conteúdo das Abas e Cards de PDF
           first=true
           for folder in public/*/; do
               if [ -d "$folder" ]; then
@@ -267,6 +270,7 @@ EOF
               fi
           done
 
+          # 5. Fechamento do HTML e Scripts JS
           cat << 'EOF' >> public/index.html
                   </div>
               </main>
@@ -293,7 +297,7 @@ EOF
               </script>
           </body>
           </html>
-          EOF
+EOF
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
