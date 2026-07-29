@@ -37,19 +37,26 @@ jobs:
         run: |
           mkdir -p public
           
-          # Procura PDFs dentro de subpastas e copia mantendo o nome da disciplina
-          find . -mindepth 2 -name "*.pdf" -not -path "./public/*" -not -path "./.git/*" | while IFS= read -r pdf; do
-              # Pega a pasta pai real do arquivo
-              dir=$(echo "$pdf" | cut -d'/' -f2)
+          # Procura todos os PDFs gerados no repositório
+          find . -name "*.pdf" -not -path "./public/*" -not -path "./.git/*" | while IFS= read -r pdf; do
+              # Extrai o caminho sem o prefixo ./
+              rel_path=$(echo "$pdf" | sed 's|^\./||')
               
-              # Ignora pastas de compilação ou de sistema
-              if [[ "$dir" == *"build"* ]] || [[ "$dir" == .* ]]; then
+              # Pega a primeira pasta do caminho (nome da disciplina)
+              discipline=$(echo "$rel_path" | cut -d'/' -f1)
+              filename=$(basename "$pdf")
+              
+              # Ignora arquivos que estejam soltos na raiz ou em pastas do sistema
+              if [ "$discipline" = "$filename" ] || [[ "$discipline" == .* ]] || [ "$discipline" = "public" ]; then
                   continue
               fi
               
-              filename=$(basename "$pdf")
-              mkdir -p "public/$dir"
-              cp "$pdf" "public/$dir/$filename"
+              # Limpa o sufixo 'build' caso o nome da disciplina tenha pegado 'build'
+              clean_discipline=$(echo "$discipline" | sed 's|build$||')
+              
+              # Copia o PDF para a pasta limpa da disciplina dentro do public
+              mkdir -p "public/$clean_discipline"
+              cp "$pdf" "public/$clean_discipline/$filename"
           done
 
           # Executa o gerador de HTML
