@@ -32,29 +32,28 @@ jobs:
         run: |
           mkdir -p public
 
-          # Varre cada pasta de disciplina
+          # Varre cada pasta de disciplina na raiz
           find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
               dir_name=$(basename "$dir_path")
               echo "--- Processando disciplina: $dir_name ---"
               
-              # Entra na pasta da disciplina para compilar localmente
-              cd "$dir_path" || continue
-              
-              # Procura e compila cada arquivo .tex da pasta
-              find . -maxdepth 2 -name "*.tex" | while IFS= read -r texfile; do
-                  echo "Compilando: $texfile"
-                  pdflatex -interaction=nonstopmode "$texfile" || true
+              # Procura e compila cada arquivo .tex (inclusive em subpastas)
+              find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
+                  tex_dir=$(dirname "$texfile")
+                  echo "Compilando: $texfile em $tex_dir"
+                  
+                  # Compila dentro do diretório do próprio arquivo para não quebrar links
+                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
               done
-              
-              # Volta para a raiz do repositório
-              cd - > /dev/null
 
-              # Copia todos os PDFs gerados para a pasta public/NOME_DA_DISCIPLINA
+              # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
               find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
-                  filename=$(basename "$pdf")
-                  mkdir -p "public/$dir_name"
-                  cp "$pdf" "public/$dir_name/$filename"
-                  echo "Copiado para o site: public/$dir_name/$filename"
+                  # Removendo o prefixo do caminho relativo
+                  rel_path="${pdf#./}"
+                  dest_file="public/$rel_path"
+                  mkdir -p "$(dirname "$dest_file")"
+                  cp "$pdf" "$dest_file"
+                  echo "Copiado mantendo estrutura: $pdf -> $dest_file"
               done
           done
 
