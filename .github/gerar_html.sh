@@ -168,11 +168,23 @@ cat << 'EOF' > public/index.html
             <div class="tabs-nav" id="tabs-header">
 EOF
 
-# Botões das abas dinâmicas
+# Gerar botões das abas
 first=true
 for folder in public/*/; do
     if [ -d "$folder" ]; then
         foldername=$(basename "$folder")
+        
+        # Filtra pastas inválidas
+        if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then
+            continue
+        fi
+
+        # Verifica se há pelo menos um PDF dentro da pasta
+        pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
+        if [ "$pdf_count" -eq 0 ]; then
+            continue
+        fi
+
         tab_id=$(echo "$foldername" | iconv -t ascii//TRANSLIT 2>/dev/null | sed -e 's/[^a-zA-Z0-9]/_/g')
         if [ -z "$tab_id" ]; then tab_id="folder_$(date +%s)"; fi
         
@@ -189,11 +201,21 @@ cat << 'EOF' >> public/index.html
             </div>
 EOF
 
-# Conteúdo das abas com PDFs
+# Gerar conteúdo de cada aba
 first=true
 for folder in public/*/; do
     if [ -d "$folder" ]; then
         foldername=$(basename "$folder")
+
+        if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then
+            continue
+        fi
+
+        pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
+        if [ "$pdf_count" -eq 0 ]; then
+            continue
+        fi
+
         tab_id=$(echo "$foldername" | iconv -t ascii//TRANSLIT 2>/dev/null | sed -e 's/[^a-zA-Z0-9]/_/g')
         if [ -z "$tab_id" ]; then tab_id="folder_$(date +%s)"; fi
         
@@ -219,7 +241,6 @@ for folder in public/*/; do
     fi
 done
 
-# Rodapé e JS
 cat << 'EOF' >> public/index.html
         </div>
     </main>
