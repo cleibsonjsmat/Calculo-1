@@ -1,0 +1,244 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% Configurações de Idioma e Pacotes Matemáticos
+\usepackage[brazilian]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+
+% --- PALETA DE CORES INSTITUCIONAL ---
+\definecolor{primary}{RGB}{10, 45, 90}       % Azul Escuro
+\definecolor{secondary}{RGB}{25, 110, 180}   % Azul Destaque
+\definecolor{bglight}{RGB}{245, 247, 250}    % Cinza Claro
+
+% --- CONFIGURAÇÕES DO TEMA BEAMER ---
+\usetheme{Boadilla}
+\usecolortheme{default}
+
+% Personalização de Cores dos Elementos Beamer
+\setbeamercolor{structure}{fg=primary}
+\setbeamercolor{palette primary}{bg=primary, fg=white}
+\setbeamercolor{palette secondary}{bg=secondary, fg=white}
+\setbeamercolor{palette tertiary}{bg=primary!80, fg=white}
+\setbeamercolor{titlelike}{bg=primary, fg=white}
+\setbeamercolor{frametitle}{bg=primary, fg=white}
+\setbeamercolor{block title}{bg=secondary, fg=white}
+\setbeamercolor{block body}{bg=bglight, fg=black}
+
+% Remover botões de navegação no rodapé
+\setbeamertemplate{navigation symbols}{}
+
+% Rodapé Personalizado
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}Prof. Cleibson José da Silva
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}Matemática VI -- IFPE
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% --- DADOS DA APRESENTAÇÃO (Texto Puro nos Colchetes para o hyperref) ---
+\title[Numeros Complexos]{Semana 1: Números Complexos I}
+\subtitle{Estudo Histórico, Forma Algébrica, Operações e Conjugação}
+\author[Prof. Cleibson]{Prof. Cleibson José da Silva}
+\institute[IFPE]{
+  Instituto Federal de Pernambuco -- Campus Caruaru \\
+  \vspace{0.2cm}
+  \includegraphics[height=2cm]{Imagens/logocaruaru.png}
+}
+\date{}
+
+\begin{document}
+
+% --- SLIDE 1: TÍTULO ---
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% --- SLIDE 2: SUMÁRIO ---
+\begin{frame}{Roteiro da Aula}
+  \tableofcontents
+\end{frame}
+
+% =======================================================
+\section{Contexto Histórico}
+% =======================================================
+
+\begin{frame}{A Origem dos Complexos: Resolução de Cúbicas}
+  \begin{itemize}
+    \item \textbf{Século XVI:} Necessidade impulsionada pela busca de raízes de equações algébricas.
+    \item \textbf{Gerolamo Cardano (1545):} Publicou a fórmula para resolução de equações do 3º grau na obra \textit{Ars Magna}.
+    \item \textbf{Rafael Bombelli:} Aplicou a fórmula à equação $x^3 - 15x - 4 = 0$, obtendo a expressão com radicais pares de números negativos:
+  \end{itemize}
+  
+  \[
+  x = \sqrt[3]{2 + \sqrt{-121}} + \sqrt[3]{2 - \sqrt{-121}}
+  \]
+
+  \pause
+  
+  \begin{block}{O Insight de Bombelli}
+    Operando livremente com a quantidade $\sqrt{-1}$, ele observou que:
+    \[
+    (2 + \sqrt{-1})^3 = 2 + 11\sqrt{-1} = 2 + \sqrt{-121} \implies \sqrt[3]{2 + \sqrt{-121}} = 2 + \sqrt{-1}
+    \]
+    Somando os termos, encontrou a raiz real $x = (2 + \sqrt{-1}) + (2 - \sqrt{-1}) = \mathbf{4}$.
+  \end{block}
+\end{frame}
+
+% =======================================================
+\section{Representação Algébrica}
+% =======================================================
+
+\begin{frame}{Forma Algébrica e o Plano de Argand-Gauss}
+  \begin{definition}[Número Complexo]
+    Define-se como \textbf{número complexo} toda entidade escrita na forma:
+    \[
+    z = x + yi, \quad \text{com } x, y \in \mathbb{R} \text{ e } i^2 = -1
+    \]
+  \end{definition}
+
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item $\text{Re}(z) = x$ \quad (\textbf{Parte Real})
+        \item $\text{Im}(z) = y$ \quad (\textbf{Parte Imaginária})
+        \item Correspondência bijetora: $z = x+yi \iff P(x, y)$
+        \item Se $x = 0$ e $y \neq 0$, $z$ é \textbf{imaginário puro}.
+        \item Se $y = 0$, $z$ é um \textbf{número real}.
+      \end{itemize}
+    \end{column}
+    
+    \begin{column}{0.4\textwidth}
+      \begin{tcolorbox}[colback=bglight, colframe=secondary, title=\centering Plano Argand-Gauss, fonttitle=\small\bfseries]
+        \centering
+        \small
+        \textbf{Eixo Vertical:} Imaginário ($\text{Im}$) \\
+        \vspace{0.2cm}
+        \textbf{Eixo Horizontal:} Real ($\text{Re}$)
+      \end{tcolorbox}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% =======================================================
+\section{Operações Elementares e Potências de i}
+% =======================================================
+
+\begin{frame}{Operações Básicas na Forma Algébrica}
+  Sejam $z_1 = 2 + 3i$ e $z_2 = 4 - i$:
+
+  \begin{exampleblock}{Exemplos Práticos}
+    \begin{enumerate}
+      \item \textbf{Adição:} $(2 + 3i) + (4 - i) = (2 + 4) + (3 - 1)i = \mathbf{6 + 2i}$
+      \item \textbf{Subtração:} $(2 + 3i) - (4 - i) = (2 - 4) + (3 - (-1))i = \mathbf{-2 + 4i}$
+      \item \textbf{Multiplicação:}
+      \[
+      (2 + 3i)(4 - i) = 8 - 2i + 12i - 3i^2 = 8 + 10i - 3(-1) = \mathbf{11 + 10i}
+      \]
+      \item \textbf{Potenciação:}
+      \[
+      (2 + 3i)^2 = 2^2 + 2(2)(3i) + (3i)^2 = 4 + 12i - 9 = \mathbf{-5 + 12i}
+      \]
+    \end{enumerate}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Periodicidade das Potências de \texorpdfstring{$i$}{i}}
+  As potências inteiras da unidade imaginária repetem-se em ciclos de $4$:
+
+  \begin{table}
+    \centering
+    \begin{tabular}{cccc}
+      \toprule
+      $i^0 = 1$ & $i^1 = i$ & $i^2 = -1$ & $i^3 = -i$ \\
+      $i^4 = 1$ & $i^5 = i$ & $i^6 = -1$ & $i^7 = -i$ \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+
+  \begin{block}{Regra Prática para \texorpdfstring{$i^n$}{i\string^n}}
+    Dividimos o expoente $n$ por $4$. Sendo $r$ o resto da divisão ($0 \le r \le 3$), temos:
+    \[
+    i^n = i^{4q + r} = (i^4)^q \cdot i^r = 1^q \cdot i^r = \mathbf{i^r}
+    \]
+  \end{block}
+
+  \pause
+  \textbf{Aplicação:} Calcular $i^{1999945347}$. \\
+  Pelo critério de divisibilidade por $4$, analisa-se apenas $47$: $47 = 4(11) + 3 \implies \text{Resto } r = 3$. \\
+  Logo, $i^{1999945347} = i^3 = \mathbf{-i}$.
+\end{frame}
+
+% =======================================================
+\section{Conjugação e Divisão}
+% =======================================================
+
+\begin{frame}{O Conjugado de um Número Complexo}
+  Dado $z = x + yi$, define-se seu \textbf{conjugado} por $\overline{z} = x - yi$.
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Propriedade Fundamental}
+        O produto de um complexo pelo seu conjugado resulta sempre em um real não negativo:
+        \[
+        z \cdot \overline{z} = (x + yi)(x - yi) = \mathbf{x^2 + y^2}
+        \]
+      \end{alertblock}
+    \end{column}
+    
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Aplicação na Divisão}
+        Multiplica-se o numerador e o denominador pelo conjugado do divisor:
+        \[
+        \frac{2 + 3i}{4 - i} = \frac{(2 + 3i)(4 + i)}{(4 - i)(4 + i)} = \frac{5 + 14i}{17}
+        \]
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Propriedades da Conjugação}
+  \begin{theorem}
+    Para quaisquer $z, w \in \mathbb{C}$, valem as relações:
+    \begin{columns}
+      \begin{column}{0.45\textwidth}
+        \begin{enumerate}
+          \item $\overline{z + w} = \overline{z} + \overline{w}$
+          \item $\overline{z - w} = \overline{z} - \overline{w}$
+          \item $\overline{z \cdot w} = \overline{z} \cdot \overline{w}$
+          \item $\overline{\left(\frac{z}{w}\right)} = \frac{\overline{z}}{\overline{w}} \quad (w \neq 0)$
+        \end{enumerate}
+      \end{column}
+      
+      \begin{column}{0.45\textwidth}
+        \begin{enumerate}
+          \item $z \in \mathbb{R} \iff z = \overline{z}$
+          \item $\overline{\overline{z}} = z$
+          \item $\overline{z^n} = (\overline{z})^n \quad (n \in \mathbb{Z}^+)$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{theorem}
+\end{frame}
+
+% --- SLIDE FINAL: ENCERRAMENTO ---
+\begin{frame}
+  \centering
+  \vspace{1cm}
+  {\Huge \bfseries \color{primary} Obrigado pela atenção!} \\[0.5cm]
+  {\large Perguntas e Discussão} \\[1cm]
+  \hrule width 0.6\paperwidth height 1pt
+  \vspace{0.5cm}
+  {\small \sffamily \color{gray} Instituto Federal de Pernambuco -- Campus Caruaru}
+\end{frame}
+
+\end{document}
