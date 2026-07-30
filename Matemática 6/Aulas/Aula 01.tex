@@ -1,0 +1,270 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{lastpage}
+\usepackage{titlesec}
+
+% Margens ajustadas: headheight aumentado para 2.5cm para acomodar a logo de 2cm sem avisos
+\geometry{top=3.2cm, bottom=2.5cm, left=2.0cm, right=2.0cm, headheight=2.5cm}
+
+% Paleta de Cores Profissional
+\definecolor{primary}{RGB}{10, 45, 90}       % Azul Escuro Institucional
+\definecolor{secondary}{RGB}{25, 110, 180}   % Azul Destaque
+\definecolor{bglight}{RGB}{245, 247, 250}    % Cinza Claro para Caixas
+\definecolor{borderlight}{RGB}{210, 220, 230}% Borda Suave
+
+% Estilização dos Títulos de Seção
+\titleformat{\section}
+  {\color{primary}\normalfont\Large\bfseries}
+  {\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+  {\color{secondary}\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Caixas Estilizadas com tcolorbox
+\tcbuselibrary{skins, breakable}
+
+% Caixa para Teoremas
+\newtcolorbox{teoremabox}[1][]{
+  colback=bglight,
+  colframe=primary,
+  fonttitle=\bfseries\color{white},
+  title={#1},
+  arc=3pt,
+  boxrule=1pt,
+  enhanced,
+  drop shadow=black!10
+}
+
+% Caixa para Exemplos
+\newtcolorbox{exemplobox}[1][]{
+  colback=white,
+  colframe=secondary,
+  fonttitle=\bfseries\color{white},
+  title={#1},
+  arc=2pt,
+  boxrule=0.8pt,
+  breakable
+}
+
+% Configuração de Cabeçalho e Rodapé
+\pagestyle{fancy}
+\fancyhf{}
+
+% Cabeçalho
+\fancyhead[L]{%
+  \includegraphics[height=2cm]{Imagens/logocaruaru.png}%
+}
+\fancyhead[R]{%
+  \small\sffamily
+  \textbf{Instituto Federal de Pernambuco --- Campus Caruaru} \\
+  \textcolor{secondary}{Disciplina:} Matemática VI \\
+  \textcolor{secondary}{Prof.:} Cleibson José da Silva
+}
+
+% Rodapé
+\fancyfoot[L]{\small\sffamily\color{gray}Material Didático --- Números Complexos}
+\fancyfoot[R]{\small\sffamily\color{gray}Página \thepage\ de \pageref{LastPage}}
+
+% Linhas divisórias do cabeçalho e rodapé
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\headrule}{{\color{primary}\hrule width\headwidth height \headrulewidth}}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=secondary,
+    urlcolor=secondary,
+    citecolor=primary
+}
+
+\begin{document}
+
+% Título Principal do Material
+\begin{center}
+  \vspace*{-0.5cm}
+  {\LARGE\bfseries\color{primary} Semana 1: Números Complexos 1} \\[0.2cm]
+  {\small\sffamily\color{gray} Estudo Histórico, Forma Algébrica, Operações e Conjugação}
+  \vspace*{0.3cm}
+  \hrule height 1.5pt \color{primary}
+\end{center}
+
+\vspace{0.3cm}
+
+\section{Contexto Histórico e Origens}
+
+A gênese dos números complexos remonta ao século XVI, impulsionada pelos avanços na resolução de equações algébricas. Em 1545, Gerolamo Cardano publicou a obra \textit{Ars Magna}, difundindo a fórmula analítica para a solução de equações cúbicas. Posteriormente, seu discípulo Rafael Bombelli analisou a equação $x^3 - 15x - 4 = 0$ por meio da dita fórmula, obtendo a seguinte expressão contendo raízes de números negativos:
+\[
+x = \sqrt[3]{2 + \sqrt{-121}} + \sqrt[3]{2 - \sqrt{-121}}
+\]
+
+Apesar da hesitação inicial quanto ao significado físico dessas quantidades relativas a radicais pares de números negativos, Bombelli operou formalmente com essas expressões segundo as propriedades da álgebra usual, observando a seguinte relação:
+\begin{align*}
+(2 + \sqrt{-1})^3 &= 2^3 + 3 \cdot 2^2 \cdot \sqrt{-1} + 3 \cdot 2 \cdot (\sqrt{-1})^2 + (\sqrt{-1})^3 \\
+&= 8 + 12\sqrt{-1} - 6 - \sqrt{-1} \\
+&= 2 + 11\sqrt{-1} \\
+&= 2 + \sqrt{-121}
+\end{align*}
+
+A partir dessa identidade, inferiu-se que:
+\[
+\sqrt[3]{2 + \sqrt{-121}} = 2 + \sqrt{-1} \quad \text{e, analogamente,} \quad \sqrt[3]{2 - \sqrt{-121}} = 2 - \sqrt{-1}
+\]
+
+Ao efetuar a soma dos termos, obteve-se:
+\[
+x = (2 + \sqrt{-1}) + (2 - \sqrt{-1}) = 4
+\]
+
+Constatando-se que $x = 4$ satisfaz rigorosamente a equação de partida, a manipulação de raízes quadradas negativas ganhou aceitação gradual no meio matemático. O símbolo $i$ foi adotado posteriormente para representar a \textbf{unidade imaginária} $\sqrt{-1}$. A aceitação plena desse conceito consolidou-se no século XIX, impulsionada pelas contribuições de Carl Friedrich Gauss ao formalizar a representação geométrica desses números no plano.
+
+\section{Representação Algébrica e Plano Complexo}
+
+Define-se como \textbf{número complexo} toda entidade da forma $z = x + yi$, em que $x, y \in \mathbb{R}$ e $i^2 = -1$.
+
+Em um sistema cartesiano bidimensional, associa-se a cada número complexo $z = x + yi$ um ponto $P(x, y)$, denominado \textbf{afixo} ou \textbf{imagem geométrica} de $z$. Essa correspondência bijetora entre o conjunto dos complexos $\mathbb{C}$ e o plano $\mathbb{R}^2$ dá origem ao chamado \textbf{Plano de Argand-Gauss}.
+
+\begin{itemize}[label=\textcolor{secondary}{$\bullet$}]
+    \item Os pontos pertencentes ao \textbf{eixo horizontal} correspondem a elementos da forma $(x, 0) = x$, identificando-se com o conjunto dos \textbf{números reais} (eixo real).
+    \item Os pontos pertencentes ao \textbf{eixo vertical} correspondem a elementos da forma $(0, y) = yi$, com $y \neq 0$, denominados \textbf{imaginários puros} (eixo imaginário).
+\end{itemize}
+
+As componentes $x$ e $y$ representam, respectivamente, a \textbf{parte real} e a \textbf{parte imaginária} de $z$, sendo denotadas formalmente por:
+\[
+\text{Re}(z) = x \quad \text{e} \quad \text{Im}(z) = y
+\]
+
+A igualdade entre dois complexos $z = x + yi$ e $w = a + bi$ ocorre se, e somente se, suas respectivas partes reais e imaginárias forem idênticas, isto é, $x = a$ e $y = b$. Em particular, $z = 0 \iff \text{Re}(z) = 0$ e $\text{Im}(z) = 0$.
+
+\subsection*{Exemplificação de Operações Básicas}
+
+\begin{exemplobox}[Exemplo 1 --- Operações Elementares]
+Sejam os complexos $z_1 = 2 + 3i$ e $z_2 = 4 - i$:
+\begin{enumerate}[label=\alph*)]
+    \item \textbf{Adição:} $(2 + 3i) + (4 - i) = (2 + 4) + (3 - 1)i = 6 + 2i$
+    \item \textbf{Subtração:} $(2 + 3i) - (4 - i) = (2 - 4) + (3 - (-1))i = -2 + 4i$
+    \item \textbf{Multiplicação:} $(2 + 3i)(4 - i) = 8 - 2i + 12i - 3i^2 = 8 + 10i - 3(-1) = 11 + 10i$
+    \item \textbf{Potenciação:} $(2 + 3i)^2 = 2^2 + 2(2)(3i) + (3i)^2 = 4 + 12i + 9(-1) = -5 + 12i$
+\end{enumerate}
+\end{exemplobox}
+
+\subsection*{Conjugação e Divisão}
+
+Dado um número complexo $z = x + yi$, o seu \textbf{conjugado} é dado por $\overline{z} = x - yi$. No plano de Argand-Gauss, a imagem de $\overline{z}$ reflete a de $z$ de maneira simétrica em relação ao eixo real.
+
+O produto de $z$ pelo seu conjugado resulta em um valor real não negativo:
+\[
+z \cdot \overline{z} = (x + yi)(x - yi) = x^2 - (yi)^2 = x^2 + y^2
+\]
+
+Essa propriedade permite racionalizar denominadores complexos, viabilizando o cálculo do quociente de dois números complexos.
+
+\begin{exemplobox}[Exemplo 2 --- Divisão de Complexos]
+Efetue a divisão de $2 + 3i$ por $4 - i$:
+\[
+\frac{2 + 3i}{4 - i} = \frac{(2 + 3i)(4 + i)}{(4 - i)(4 + i)} = \frac{8 + 2i + 12i + 3i^2}{16 - i^2} = \frac{5 + 14i}{17} = \frac{5}{17} + \frac{14}{17}i
+\]
+\end{exemplobox}
+
+\subsection*{Comportamento Periódico das Potências de $i$}
+
+As potências de expoente inteiro da unidade imaginária apresentam periodicidade de ordem $4$:
+\begin{align*}
+i^0 &= 1 & i^1 &= i & i^2 &= -1 & i^3 &= -i \\
+i^4 &= 1 & i^5 &= i & i^6 &= -1 & i^7 &= -i
+\end{align*}
+
+De forma geral, para qualquer $n \in \mathbb{Z}$, tem-se $i^{n+4} = i^n$. Para determinar $i^n$, efetua-se a divisão euclidiana do expoente $n$ por $4$, obtendo $n = 4q + r$ com $r \in \{0, 1, 2, 3\}$. Segue que:
+\[
+i^n = i^{4q+r} = (i^4)^q \cdot i^r = 1^q \cdot i^r = i^r
+\]
+
+\begin{exemplobox}[Exemplo 3 --- Aplicação de Potências de $i$]
+Simplifique a potência $i^{1999945347}$.
+
+\textit{Solução:} Pelo critério de divisibilidade por $4$, analisa-se o resto da divisão do número formado pelos dois últimos algarismos ($47$) por $4$. Como $47 = 4(11) + 3$, o resto é $r = 3$. Portanto:
+\[
+i^{1999945347} = i^3 = -i
+\]
+\end{exemplobox}
+
+\begin{exemplobox}[Exemplo 4 --- Equação no Campo Complexo]
+Resolva a equação quadrática $z^2 - 2z + 2 = 0$.
+
+\textit{Solução:} Aplicando a fórmula quadrática:
+\[
+z = \frac{-(-2) \pm \sqrt{(-2)^2 - 4(1)(2)}}{2(1)} = \frac{2 \pm \sqrt{-4}}{2} = \frac{2 \pm 2i}{2} = 1 \pm i
+\]
+\end{exemplobox}
+
+\begin{exemplobox}[Exemplo 5 --- Raízes Quadradas de um Complexo]
+Determine as raízes quadradas de $3 - 4i$.
+
+\textit{Solução (Método Algébrico):} Procura-se $z = x + yi$ tal que $z^2 = 3 - 4i$.
+\[
+(x + yi)^2 = (x^2 - y^2) + 2xyi = 3 - 4i
+\]
+
+Obtém-se o sistema real:
+\[
+\begin{cases}
+x^2 - y^2 = 3 \\
+2xy = -4
+\end{cases}
+\]
+
+Isolando $y = -\frac{2}{x}$ e substituindo na primeira equação, chega-se a $x^4 - 3x^2 - 4 = 0$. As raízes reais para $x$ são $x = \pm 2$.
+\begin{itemize}
+    \item Para $x = 2 \implies y = -1$, obtendo-se $z_1 = 2 - i$.
+    \item Para $x = -2 \implies y = 1$, obtendo-se $z_2 = -2 + i$.
+\end{itemize}
+\end{exemplobox}
+
+\begin{exemplobox}[Exemplo 6 --- Interpretação Geométrica]
+Descreva o lugar geométrico dos pontos $z = t + it^2$ com $t \in [0, 1]$.
+
+\textit{Solução:} As equações paramétricas das coordenadas são $x = t$ e $y = t^2$. Eliminando $t$, obtém-se a parábola $y = x^2$ restrita ao intervalo $x \in [0, 1]$.
+\end{exemplobox}
+
+\section{Propriedades Fundamentais da Conjugação}
+
+\begin{teoremabox}[Teorema 1 --- Propriedades do Conjugado]
+Para quaisquer números complexos $z, w \in \mathbb{C}$, são válidas as seguintes relações:
+\begin{enumerate}[label=\roman*)]
+    \item $\overline{z + w} = \overline{z} + \overline{w}$
+    \item $\overline{z - w} = \overline{z} - \overline{w}$
+    \item $\overline{z \cdot w} = \overline{z} \cdot \overline{w}$
+    \item $\overline{\left(\frac{z}{w}\right)} = \frac{\overline{z}}{\overline{w}}$, para $w \neq 0$
+    \item $z \in \mathbb{R} \iff z = \overline{z}$
+    \item $\overline{\overline{z}} = z$
+    \item $\overline{z^n} = (\overline{z})^n$, para todo $n \in \mathbb{Z}^+$
+\end{enumerate}
+\end{teoremabox}
+
+\begin{proof}[\textbf{Demonstração da Propriedade i}]
+Considerando $z = a + bi$ e $w = c + di$, onde $a, b, c, d \in \mathbb{R}$, a soma dos complexos é dada por $z + w = (a + c) + (b + d)i$. Aplicando a definição de conjugado:
+\[
+\overline{z + w} = (a + c) - (b + d)i = (a - bi) + (c - di) = \overline{z} + \overline{w}
+\]
+O que conclui a demonstração da propriedade i).
+\end{proof}
+
+\vspace{0.5cm}
+
+\renewcommand{\refname}{Referências Bibliográficas}
+\begin{thebibliography}{9}
+
+\bibitem{SBM_vol3}
+LIMA, Elon Lages; CARVALHO, Paulo Cezar Pinto; WAGNER, Eduardo; MORGADO, Augusto César. \textit{A Matemática do Ensino Médio: Volume 3}. Coleção do Professor de Matemática. Rio de Janeiro: Sociedade Brasileira de Matemática (SBM), 2012.
+
+\end{thebibliography}
+
+\end{document}
