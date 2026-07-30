@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo 1 - Materiais</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        h1 { color: #2c3e50; }
+        h2 { border-bottom: 2px solid #3498db; color: #2980b9; margin-top: 30px; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-bottom: 8px; }
+        a { text-decoration: none; color: #2980b9; font-weight: bold; }
+        a:hover { text-decoration: underline; color: #16a085; }
+    </style>
+</head>
+<body>
+
+    <h1>📚 Discipline: Cálculo 1</h1>
+
+    <h2>📂 Slides das Aulas</h2>
+    <div id="container-slides"><p>Carregando...</p></div>
+
+    <h2>📝 Listas de Exercícios</h2>
+    <div id="container-listas"><p>Carregando...</p></div>
+
+    <h2>🎥 Aulas</h2>
+    <div id="container-aulas"><p>Carregando...</p></div>
+
+    <h2>📄 Provas Antigas</h2>
+    <div id="container-provas"><p>Carregando...</p></div>
+
+    <script>
+      // Função genérica para carregar qualquer arquivo TXT e exibir na DIV desejada
+      function carregarLinks(nomeArquivo, idContainer) {
+        fetch(nomeArquivo)
+          .then(resposta => {
+            if (!resposta.ok) throw new Error('Arquivo não encontrado');
+            return resposta.text();
+          })
+          .then(texto => {
+            const container = document.getElementById(idContainer);
+            const linhas = texto.trim().split('\n');
+            
+            let html = '<ul>';
+            let temConteudo = false;
+
+            linhas.forEach(linha => {
+              if (linha.trim() !== '') {
+                temConteudo = true;
+                const partes = linha.split('|');
+                const titulo = partes[0] ? partes[0].trim() : 'Material';
+                const url = partes[1] ? partes[1].trim() : partes[0].trim();
+                html += `<li>📄 <a href="${url}" target="_blank">${titulo}</a></li>`;
+              }
+            });
+
+            html += '</ul>';
+            container.innerHTML = temConteudo ? html : '<p><i>Nenhum material cadastrado ainda.</i></p>';
+          })
+          .catch(() => {
+            document.getElementById(idContainer).innerHTML = '<p><i>Sem materiais nesta seção.</i></p>';
+          });
+      }
+
+      // Carrega cada seção a partir do seu arquivo .txt correspondente
+      carregarLinks('slides.txt', 'container-slides');
+      carregarLinks('listas.txt', 'container-listas');
+      carregarLinks('aulas.txt', 'container-aulas');
+      carregarLinks('provas.txt', 'container-provas');
+    </script>
+
+</body>
+</html>
