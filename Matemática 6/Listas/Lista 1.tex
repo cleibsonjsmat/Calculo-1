@@ -134,53 +134,76 @@
 
 % --- INÍCIO DAS QUESTÕES ---
 
-\begin{questao}[1,5 ponto]{Operações Fundamentais}
-Sejam os números complexos $z_1 = 3 + 4i$ e $z_2 = 1 - 2i$. Efetue as seguintes operações:
-\begin{enumerate}[label=\alph*)]
-    \item $z_1 + 2z_2$
-    \item $z_1 \cdot z_2$
-    \item $\dfrac{z_1}{z_2}$
+
+\begin{enumerate}[label=\textbf{\arabic*)}, leftmargin=*]
+
+    \item Determine:
+    \begin{enumerate}[label=\alph*)]
+        \item $\dfrac{(1 + 2i)^2}{3 + 4i}$
+        \item $(1 - i)^{12}$
+        \item $i^{-3333}$
+        \item $1 + i + i^2 + \cdots + i^{1789}$
+    \end{enumerate}
+
+    \item Determine $a$ real para que $\dfrac{2 + ai}{1 - i}$ seja: a) real. b) imaginário puro.
+
+    \item Determine a área do triângulo cujos vértices são as imagens das raízes da equação $z^3 + z^2 + z = 0$.
+
+    \item Determine as raízes quadradas de: a) $-5 - 12i$. b) $i$.
+
+    \item Determine os complexos que têm o quadrado igual ao conjugado.
+
+    \item Determine o lugar geométrico das imagens dos complexos $z$ tais que:
+    \begin{enumerate}[label=\alph*)]
+        \item $z \cdot \overline{z} = 1$.
+        \item $z^2$ é imaginário puro.
+        \item $\text{Re}(z) > 1$.
+        \item $z = \overline{z}$.
+        \item $z \cdot \overline{z} + z + \overline{z} = 0$.
+        \item $z + \dfrac{1}{z}$ é real.
+        \item $\text{Re}\left(\dfrac{z + 1}{z - 1}\right) = 1$.
+    \end{enumerate}
+
+    \item Determine o lugar geométrico das imagens dos complexos da forma $t + i\sqrt{1 - t^2}$.
+
+    \item Se $z$ é um complexo não-real, qual é a natureza do quadrilátero cujos vértices são as imagens de $z$, $\overline{z}$, $-z$ e $-\overline{z}$?
+
+    \item Resolva o sistema $\begin{cases} (1 - i)\overline{z} + i \cdot w = i \\ 2z + (1 + i)\overline{w} = 0 \end{cases}$.
+
+    \item Determine os complexos $z$ tais que $z + \dfrac{1}{z} = 1$.
+
+    \item 
+    \begin{enumerate}[label=\alph*)]
+        \item Prove o Teorema de Bramagupta*: Se $a$ e $b$ são números naturais e cada um deles é uma soma de dois quadrados perfeitos então $ab$ também é uma soma de dois quadrados perfeitos.
+        \item Escreva $(5^2 + 6^2) \cdot (7^2 + 10^2)$ como uma soma de dois quadrados perfeitos.
+    \end{enumerate}
+
+    \item Determine o polinômio de segundo grau, de coeficientes reais, que admite $1 - 3i$ como raiz.
+
+    \item Determine $a$ real para que a equação $z^2 + (a + i)z + 2 - 3i = 0$ admita uma raiz real.
+
+    \item Simplifique: a) $\sqrt{2 + \sqrt{3}}$. \quad b) $\sqrt{7 + 4\sqrt{3}}$.
+
+    \item O polinômio $P(z)$, de coeficientes reais é tal que $P(1 - 2i) = 2 + 3i$. Determine o valor de $P(1 + 2i)$.
+
+    \item Uma das raízes da equação $x^4 + bx^2 + c = 0$, $b$ e $c$ reais, é $1 + 3i$. Determine as outras.
+
+    \item Para $n$ inteiro, quantos valores diferentes pode ter a expressão $i^n + i^{-n}$?
+
+    \item Calcule $1 + i + i^2 + \cdots + i^n$.
+
+    \item Prove que $\text{Re}(z) = \dfrac{z + \overline{z}}{2}$ e $\text{Im}(z) = \dfrac{z - \overline{z}}{2 \cdot i}$.
+
+    \item Resolva as equações: 
+    \begin{enumerate}[label=\alph*)]
+        \item $z + 2\overline{z} = 6 + i$.
+        \item $(1 + i)z + 3i\overline{z} = 2 + i$.
+    \end{enumerate}
+
 \end{enumerate}
-\end{questao}
 
-% Espaço para o aluno responder caso seja impressa
-\espacoresposta{3cm}
+%\espacoresposta{4cm}
 
-\begin{questao}[2,0 pontos]{Potências da Unidade Imaginária}
-Determine o valor numérico exato da seguinte expressão algébrica:
-\[
-S = i^{2026} + i^{1999} - 3i^{47}
-\]
-\end{questao}
 
-% Exemplo de questão acompanhada de Gabarito/Resolução
-\begin{gabarito}
-\textbf{Passo 1:} Dividir os expoentes por $4$ e determinar os restos:
-\begin{itemize}[noitemsep]
-    \item $2026 = 4(506) + 2 \implies i^{2026} = i^2 = -1$
-    \item $1999 = 4(499) + 3 \implies i^{1999} = i^3 = -i$
-    \item $47 = 4(11) + 3 \implies i^{47} = i^3 = -i$
-\end{itemize}
-\textbf{Passo 2:} Substituir na expressão original:
-\[
-S = (-1) + (-i) - 3(-i) = -1 - i + 3i = -1 + 2i
-\]
-\end{gabarito}
-
-\begin{questao}[2,0 pontos]{Equações no Campo Complexo}
-Encontre todas as raízes complexas da equação quadrática abaixo:
-\[
-z^2 - 4z + 13 = 0
-\]
-\end{questao}
-
-\espacoresposta{4cm}
-
-\begin{questao}[2,5 pontos]{Lugar Geométrico no Plano Argand-Gauss}
-Descreva e represente geometricamente o conjunto dos números complexos $z = x + yi$ que satisfazem a condição:
-\[
-|z - 2i| = 3
-\]
-\end{questao}
 
 \end{document}
