@@ -1,5 +1,4 @@
 \documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
 \usepackage[brazilian]{babel}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{geometry}
@@ -9,11 +8,11 @@
 \usepackage{graphicx}
 \usepackage{fancyhdr}
 \usepackage{tcolorbox}
-\usepackage{lastpage}
+\usepackage{totpages}
 \usepackage{titlesec}
 
-% Margens ajustadas: headheight aumentado para 2.5cm para acomodar a logo de 2cm sem avisos
-\geometry{top=3.2cm, bottom=2.5cm, left=2.0cm, right=2.0cm, headheight=2.5cm}
+% Margens ajustadas: headheight em 2.6cm previne qualquer estouro da logo de 2cm
+\geometry{top=3.5cm, bottom=2.5cm, left=2.0cm, right=2.0cm, headheight=2.6cm}
 
 % Paleta de Cores Profissional
 \definecolor{primary}{RGB}{10, 45, 90}       % Azul Escuro Institucional
@@ -65,14 +64,14 @@
 }
 \fancyhead[R]{%
   \small\sffamily
-  \textbf{Instituto Federal de Pernambuco --- Campus Caruaru} \\
+  \textbf{Instituto Federal de Pernambuco -- Campus Caruaru} \\
   \textcolor{secondary}{Disciplina:} Matemática VI \\
   \textcolor{secondary}{Prof.:} Cleibson José da Silva
 }
 
-% Rodapé
-\fancyfoot[L]{\small\sffamily\color{gray}Material Didático --- Números Complexos}
-\fancyfoot[R]{\small\sffamily\color{gray}Página \thepage\ de \pageref{LastPage}}
+% Rodapé (Corrigido para \ref{TotPages})
+\fancyfoot[L]{\small\sffamily\color{gray}Material Didático -- Números Complexos}
+\fancyfoot[R]{\small\sffamily\color{gray}Página \thepage\ de \ref{TotPages}}
 
 % Linhas divisórias do cabeçalho e rodapé
 \renewcommand{\headrulewidth}{0.8pt}
@@ -90,7 +89,7 @@
 
 % Título Principal do Material
 \begin{center}
-  \vspace*{-0.5cm}
+  \vspace*{-0.3cm}
   {\LARGE\bfseries\color{primary} Semana 1: Números Complexos 1} \\[0.2cm]
   {\small\sffamily\color{gray} Estudo Histórico, Forma Algébrica, Operações e Conjugação}
   \vspace*{0.3cm}
