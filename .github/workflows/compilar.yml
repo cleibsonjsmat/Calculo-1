@@ -1,75 +1,78 @@
-ame: Compilar LaTeX e Gerar Abas Dinamicas
+name: Compilar LaTeX e Gerar Abas Dinamicas
 
 on:
-  push:
-    branches:
-      - main
-      - master
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build_and_deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Baixar código do repositório
-        uses: actions/checkout@v4
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
 
-      - name: Instalar ambiente LaTeX no servidor
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-lang-portuguese texlive-fonts-recommended
+      - name: Instalar ambiente LaTeX no servidor
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-lang-portuguese texlive-fonts-recommended
 
-      - name: Compilar arquivos .tex e Organizar no Public
-        run: |
-          mkdir -p public
+      - name: Compilar arquivos .tex e Organizar no Public
+        run: |
+          mkdir -p public
 
-          # Varre cada pasta de disciplina na raiz
-          find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
-              dir_name=$(basename "$dir_path")
-              echo "--- Processando disciplina: $dir_name ---"
-              
-              # Procura e compila cada arquivo .tex (inclusive em subpastas)
-              find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
-                  tex_dir=$(dirname "$texfile")
-                  echo "Compilando: $texfile em $tex_dir"
-                  
-                  # Compila dentro do diretório do próprio arquivo para não quebrar links
-                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
-              done
+          # Varre cada pasta de disciplina na raiz
+          find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
+              dir_name=$(basename "$dir_path")
+              echo "--- Processando disciplina: $dir_name ---"
+              
+              # Procura e compila cada arquivo .tex (inclusive em subpastas)
+              find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
+                  tex_dir=$(dirname "$texfile")
+                  echo "Compilando: $texfile em $tex_dir"
+                  
+                  # Compila dentro do diretório do próprio arquivo para não quebrar links
+                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
+              done
 
-              # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
-              find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
-                  # Removendo o prefixo do caminho relativo
-                  rel_path="${pdf#./}"
-                  dest_file="public/$rel_path"
-                  mkdir -p "$(dirname "$dest_file")"
-                  cp "$pdf" "$dest_file"
-                  echo "Copiado mantendo estrutura: $pdf -> $dest_file"
-              done
-          done
+              # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
+              find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
+                  # Removendo o prefixo do caminho relativo
+                  rel_path="${pdf#./}"
+                  dest_file="public/$rel_path"
+                  mkdir -p "$(dirname "$dest_file")"
+                  cp "$pdf" "$dest_file"
+                  echo "Copiado mantendo estrutura: $pdf -> $dest_file"
+              done
+          done
 
-          # Ajusta o script do HTML e executa
-          sed -i 's/\r$//' .github/gerar_html.sh
-          chmod +x .github/gerar_html.sh
-          bash .github/gerar_html.sh
+          # Ajusta o script do HTML e executa
+          sed -i 's/\r$//' .github/gerar_html.sh
+          chmod +x .github/gerar_html.sh
+          bash .github/gerar_html.sh
 
-      - name: Configurar Pages
-        uses: actions/configure-pages@v5
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
 
-      - name: Enviar artefatos para o Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'public'
+      - name: Enviar artefatos para o Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'public'
 
-      - name: Publicar no GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
