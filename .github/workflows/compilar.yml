@@ -3,12 +3,10 @@ name: Compilar LaTeX e Gerar Abas Dinamicas
 on:
   push:
     branches:
-      - main
-      - master
-  workflow_dispatch:
+      - main  # ou master, dependendo da sua branch principal
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -19,57 +17,31 @@ concurrency:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    
+    # ESTA É A LINHA CHAVE QUE CORRIGE O ERRO DE MISSING ENVIRONMENT:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Baixar código do repositório
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar ambiente LaTeX no servidor
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-lang-portuguese texlive-fonts-recommended
+      - name: Compilar arquivos LaTeX para PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: |
+            Calculo1/**/*.tex
+          continue_on_error: true
 
-      - name: Compilar arquivos .tex e Organizar no Public
-        run: |
-          mkdir -p public
-
-          # Varre cada pasta de disciplina na raiz
-          find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
-              dir_name=$(basename "$dir_path")
-              echo "--- Processando disciplina: $dir_name ---"
-              
-              # Procura e compila cada arquivo .tex (inclusive em subpastas)
-              find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
-                  tex_dir=$(dirname "$texfile")
-                  echo "Compilando: $texfile em $tex_dir"
-                  
-                  # Compila dentro do diretório do próprio arquivo para não quebrar links
-                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
-              done
-
-              # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
-              find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
-                  # Removendo o prefixo do caminho relativo
-                  rel_path="${pdf#./}"
-                  dest_file="public/$rel_path"
-                  mkdir -p "$(dirname "$dest_file")"
-                  cp "$pdf" "$dest_file"
-                  echo "Copiado mantendo estrutura: $pdf -> $dest_file"
-              done
-          done
-
-          # Ajusta o script do HTML e executa
-          sed -i 's/\r$//' .github/gerar_html.sh
-          chmod +x .github/gerar_html.sh
-          bash .github/gerar_html.sh
-
-      - name: Configurar Pages
+      - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Enviar artefatos para o Pages
+      - name: Upload dos artefatos do site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'public'
+          path: '.'  # Envia todo o conteúdo do repositório (com os PDFs gerados)
 
-      - name: Publicar no GitHub Pages
+      - name: Deploy no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
