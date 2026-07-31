@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <h1>📚 Discipline: Cálculo 1</h1>
+    <h1>📚 Disciplina: Cálculo 1</h1>
 
     <h2>📂 Slides das Aulas</h2>
     <div id="container-slides"><p>Carregando...</p></div>
@@ -76,10 +76,11 @@
           });
       }
 
-      carregarLinks('https://raw.githubusercontent.com/cleibsonjsmat/IFPE-Prof-Cleibson/main/Calculo1/Slides/links.txt', 'container-slides');
-carregarLinks('https://raw.githubusercontent.com/cleibsonjsmat/IFPE-Prof-Cleibson/main/Calculo1/Listas/links.txt', 'container-listas');
-carregarLinks('https://raw.githubusercontent.com/cleibsonjsmat/IFPE-Prof-Cleibson/main/Calculo1/Aulas/links.txt', 'container-aulas');
-carregarLinks('https://raw.githubusercontent.com/cleibsonjsmat/IFPE-Prof-Cleibson/main/Calculo1/Provas/links.txt', 'container-provas');
+      // Usando caminhos relativos diretos da pasta da disciplina
+      carregarLinks('Slides/links.txt', 'container-slides');
+      carregarLinks('Listas/links.txt', 'container-listas');
+      carregarLinks('Aulas/links.txt', 'container-aulas');
+      carregarLinks('Provas/links.txt', 'container-provas');
     </script>
 
 </body>
