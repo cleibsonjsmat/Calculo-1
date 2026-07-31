@@ -43,10 +43,10 @@ jobs:
               # Procura e compila cada arquivo .tex (inclusive em subpastas)
               find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
                   tex_dir=$(dirname "$texfile")
-                  echo "Compilando (Passo 1 e Passo 2): $texfile em $tex_dir"
+                  echo "Compilando: $texfile em $tex_dir"
                   
-                  # Compila DUAS VEZES para preencher contadores do rodapé e referências
-                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
+                  # Compila dentro do diretório do próprio arquivo para não quebrar links
+                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
               done
 
               # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
