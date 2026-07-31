@@ -1,49 +1,75 @@
-name: Compilar LaTeX e Gerar Abas Dinamicas
+ame: Compilar LaTeX e Gerar Abas Dinamicas
 
 on:
-  push:
-    branches:
-      - main  # Se a sua branch principal for 'master', mude aqui para master
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
 
-# Permissões necessárias para o GitHub Pages publicar o site
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
+  pages: write
+  id-token: write
 
-# Garante que deploys simultâneos não se atropelem
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build_and_deploy:
-    runs-on: ubuntu-latest
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
 
-    # Define o ambiente correto do GitHub Pages para evitar o erro de 'Missing environment'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      - name: Instalar ambiente LaTeX no servidor
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-lang-portuguese texlive-fonts-recommended
 
-    steps:
-      - name: Baixar o código do repositório
-        uses: actions/checkout@v4
+      - name: Compilar arquivos .tex e Organizar no Public
+        run: |
+          mkdir -p public
 
-      - name: Compilar todos os arquivos LaTeX (.tex) para PDF
-        uses: xu-cheng/latex-action@v3
-        with:
-          root_file: "*.tex"
-          glob_root_file: true
-          continue_on_error: true
+          # Varre cada pasta de disciplina na raiz
+          find . -maxdepth 1 -type d -not -path "." -not -path "./.git" -not -path "./.github" -not -path "./public" -not -name "*build" | while IFS= read -r dir_path; do
+              dir_name=$(basename "$dir_path")
+              echo "--- Processando disciplina: $dir_name ---"
+              
+              # Procura e compila cada arquivo .tex (inclusive em subpastas)
+              find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
+                  tex_dir=$(dirname "$texfile")
+                  echo "Compilando: $texfile em $tex_dir"
+                  
+                  # Compila dentro do diretório do próprio arquivo para não quebrar links
+                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
+              done
 
-      - name: Configurar estrutura do GitHub Pages
-        uses: actions/configure-pages@v5
+              # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
+              find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
+                  # Removendo o prefixo do caminho relativo
+                  rel_path="${pdf#./}"
+                  dest_file="public/$rel_path"
+                  mkdir -p "$(dirname "$dest_file")"
+                  cp "$pdf" "$dest_file"
+                  echo "Copiado mantendo estrutura: $pdf -> $dest_file"
+              done
+          done
 
-      - name: Compactar e preparar os arquivos compilados (HTML/PDF/TXT)
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
+          # Ajusta o script do HTML e executa
+          sed -i 's/\r$//' .github/gerar_html.sh
+          chmod +x .github/gerar_html.sh
+          bash .github/gerar_html.sh
 
-      - name: Publicar no GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar artefatos para o Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'public'
+
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
