@@ -56,7 +56,7 @@ echo '        </div>' >> "$HTML_FILE"
 echo '        <div class="card">' >> "$HTML_FILE"
 echo '            <div class="tabs-nav" id="tabs-header">' >> "$HTML_FILE"
 
-# 1. Gerar Botões das Disciplinas
+# 1. Gerar Botões das Disciplinas (Considera PDFs e links.txt)
 first=true
 count=0
 for folder in public/*/; do
@@ -65,7 +65,10 @@ for folder in public/*/; do
         if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then continue; fi
 
         pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
-        if [ "$pdf_count" -eq 0 ]; then continue; fi
+        txt_count=$(find "$folder" -name "links.txt" | wc -l)
+        
+        # Se não tiver PDF nem links.txt, pula
+        if [ "$pdf_count" -eq 0 ] && [ "$txt_count" -eq 0 ]; then continue; fi
 
         count=$((count + 1))
         tab_id="tab_${count}"
@@ -98,7 +101,8 @@ for folder in public/*/; do
         if [[ "$foldername" == *"build"* ]] || [[ "$foldername" == .* ]]; then continue; fi
 
         pdf_count=$(find "$folder" -name "*.pdf" | wc -l)
-        if [ "$pdf_count" -eq 0 ]; then continue; fi
+        txt_count=$(find "$folder" -name "links.txt" | wc -l)
+        if [ "$pdf_count" -eq 0 ] && [ "$txt_count" -eq 0 ]; then continue; fi
 
         count=$((count + 1))
         tab_id="tab_${count}"
@@ -115,10 +119,12 @@ for folder in public/*/; do
         echo "                <div class=\"subtabs-nav\">" >> "$HTML_FILE"
         echo "                    <button class=\"subtab-btn active\" onclick=\"filterGroup(this, '$tab_id', 'all')\">Todos</button>" >> "$HTML_FILE"
         
-        # Mapeia todas as subpastas que possuem PDFs
+        # Mapeia todas as subpastas que possuem PDFs OU arquivos links.txt
         find "$folder" -mindepth 1 -type d | while IFS= read -r subfolder; do
             sub_pdf_count=$(find "$subfolder" -maxdepth 1 -name "*.pdf" | wc -l)
-            if [ "$sub_pdf_count" -gt 0 ]; then
+            sub_txt_count=$(find "$subfolder" -maxdepth 1 -name "links.txt" | wc -l)
+            
+            if [ "$sub_pdf_count" -gt 0 ] || [ "$sub_txt_count" -gt 0 ]; then
                 subname=$(basename "$subfolder")
                 group_id=$(echo "$subname" | sed -e 's/[^a-zA-Z0-9]/_/g')
                 echo "                    <button class=\"subtab-btn\" onclick=\"filterGroup(this, '$tab_id', 'grp_$group_id')\">$subname</button>" >> "$HTML_FILE"
@@ -128,7 +134,7 @@ for folder in public/*/; do
 
         echo "                <div class=\"pdf-grid\">" >> "$HTML_FILE"
 
-        # Arquivos PDF
+        # A) Processa Arquivos PDF Locais
         find "$folder" -name "*.pdf" | while IFS= read -r pdf; do
             if [ -f "$pdf" ]; then
                 relpath=$(echo "$pdf" | sed 's|^public/||')
@@ -147,6 +153,39 @@ for folder in public/*/; do
             fi
         done
 
+        # B) Processa Arquivos links.txt (YouTube, Google Drive, Links extern)
+        find "$folder" -name "links.txt" | while IFS= read -r txtfile; do
+            if [ -f "$txtfile" ]; then
+                parent_dir=$(basename "$(dirname "$txtfile")")
+                group_class="grp_root"
+                if [ "$parent_dir" != "$foldername" ]; then
+                    group_class="grp_$(echo "$parent_dir" | sed -e 's/[^a-zA-Z0-9]/_/g')"
+                fi
+
+                # Lê cada linha do arquivo links.txt
+                while IFS= read -r line || [ -n "$line" ]; do
+                    line_clean=$(echo "$line" | tr -d '\r' | xargs)
+                    if [ -n "$line_clean" ]; then
+                        title=$(echo "$line_clean" | cut -d'|' -f1 | xargs)
+                        url=$(echo "$line_clean" | cut -d'|' -f2- | xargs)
+
+                        # Escolhe o ícone com base no tipo de link
+                        icon="🔗"
+                        if [[ "$url" == *"youtube.com"* ]] || [[ "$url" == *"youtu.be"* ]]; then
+                            icon="🎥"
+                        elif [[ "$url" == *"drive.google.com"* ]]; then
+                            icon="☁️"
+                        fi
+
+                        echo "                    <a href=\"$url\" target=\"_blank\" class=\"pdf-card $group_class\">" >> "$HTML_FILE"
+                        echo "                        <div class=\"pdf-info\"><span>$icon</span><span class=\"pdf-name\">$title</span></div>" >> "$HTML_FILE"
+                        echo "                        <span class=\"btn-download\">Acessar</span>" >> "$HTML_FILE"
+                        echo "                    </a>" >> "$HTML_FILE"
+                    fi
+                done < "$txtfile"
+            fi
+        done
+
         echo '                </div>' >> "$HTML_FILE"
         echo '            </div>' >> "$HTML_FILE"
     fi
@@ -157,7 +196,6 @@ echo '        </div>' >> "$HTML_FILE"
 echo '    </main>' >> "$HTML_FILE"
 echo '    <footer>' >> "$HTML_FILE"
 echo '        <p><strong>"A matemática não é sobre números, equações ou algoritmos: é sobre compreender o mundo. Bons estudos e excelente jornada!"</strong></p>' >> "$HTML_FILE"
-echo '        <p></p>' >> "$HTML_FILE"
 echo '    </footer>' >> "$HTML_FILE"
 echo '    <script>' >> "$HTML_FILE"
 echo '        function openTab(evt, tabName) {' >> "$HTML_FILE"

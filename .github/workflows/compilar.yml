@@ -40,23 +40,20 @@ jobs:
               dir_name=$(basename "$dir_path")
               echo "--- Processando disciplina: $dir_name ---"
               
-              # Procura e compila cada arquivo .tex (inclusive em subpastas)
+              # Procura e compila cada arquivo .tex 2 vezes (resolve rodapé e referências)
               find "$dir_path" -name "*.tex" | while IFS= read -r texfile; do
                   tex_dir=$(dirname "$texfile")
                   echo "Compilando: $texfile em $tex_dir"
-                  
-                  # Compila dentro do diretório do próprio arquivo para não quebrar links
-                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
+                  (cd "$tex_dir" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" && pdflatex -interaction=nonstopmode "$(basename "$texfile")" || true)
               done
 
-              # Copia os PDFs preservando a estrutura de subpastas para a pasta public/
-              find "$dir_path" -name "*.pdf" | while IFS= read -r pdf; do
-                  # Removendo o prefixo do caminho relativo
-                  rel_path="${pdf#./}"
+              # Copia os PDFs E os arquivos links.txt mantendo a estrutura de subpastas para a pasta public/
+              find "$dir_path" \( -name "*.pdf" -o -name "links.txt" \) | while IFS= read -r item; do
+                  rel_path="${item#./}"
                   dest_file="public/$rel_path"
                   mkdir -p "$(dirname "$dest_file")"
-                  cp "$pdf" "$dest_file"
-                  echo "Copiado mantendo estrutura: $pdf -> $dest_file"
+                  cp "$item" "$dest_file"
+                  echo "Copiado mantendo estrutura: $item -> $dest_file"
               done
           done
 
