@@ -31,43 +31,56 @@
     <div id="container-provas"><p>Carregando...</p></div>
 
     <script>
-      // Função genérica para carregar qualquer arquivo TXT e exibir na DIV desejada
       function carregarLinks(nomeArquivo, idContainer) {
-        fetch(nomeArquivo)
+        // O '?v=' evita que o navegador pegue a versão antiga do arquivo em cache
+        fetch(nomeArquivo + '?v=' + new Date().getTime())
           .then(resposta => {
-            if (!resposta.ok) throw new Error('Arquivo não encontrado');
+            if (!resposta.ok) throw new Error('Não foi possível encontrar: ' + nomeArquivo);
             return resposta.text();
           })
           .then(texto => {
             const container = document.getElementById(idContainer);
-            const linhas = texto.trim().split('\n');
+            
+            // Remove o \r do Windows antes de quebrar as linhas
+            const linhas = texto.replace(/\r/g, '').trim().split('\n');
             
             let html = '<ul>';
             let temConteudo = false;
 
             linhas.forEach(linha => {
-              if (linha.trim() !== '') {
+              const linhaLimpa = linha.trim();
+              if (linhaLimpa !== '') {
                 temConteudo = true;
-                const partes = linha.split('|');
-                const titulo = partes[0] ? partes[0].trim() : 'Material';
-                const url = partes[1] ? partes[1].trim() : partes[0].trim();
-                html += `<li>📄 <a href="${url}" target="_blank">${titulo}</a></li>`;
+                
+                // Divide a linha apenas na PRIMEIRA ocorrência do '|'
+                const indicePipe = linhaLimpa.indexOf('|');
+                
+                let titulo = 'Material';
+                let url = linhaLimpa;
+
+                if (indicePipe !== -1) {
+                  titulo = linhaLimpa.substring(0, indicePipe).trim();
+                  url = linhaLimpa.substring(indicePipe + 1).trim();
+                }
+
+                html += `<li>📄 <a href="${url}" target="_blank" rel="noopener noreferrer">${titulo}</a></li>`;
               }
             });
 
             html += '</ul>';
             container.innerHTML = temConteudo ? html : '<p><i>Nenhum material cadastrado ainda.</i></p>';
           })
-          .catch(() => {
+          .catch(erro => {
+            console.error('Erro na seção ' + idContainer + ':', erro);
             document.getElementById(idContainer).innerHTML = '<p><i>Sem materiais nesta seção.</i></p>';
           });
       }
 
-      // Aponta para os arquivos .txt que estão DENTRO das subpastas
-carregarLinks('Slides/links.txt', 'container-slides');
-carregarLinks('Listas/links.txt', 'container-listas');
-carregarLinks('Aulas/links.txt', 'container-aulas');
-carregarLinks('Provas/links.txt', 'container-provas');
+      // Chamada para as subpastas
+      carregarLinks('Slides/links.txt', 'container-slides');
+      carregarLinks('Listas/links.txt', 'container-listas');
+      carregarLinks('Aulas/links.txt', 'container-aulas');
+      carregarLinks('Provas/links.txt', 'container-provas');
     </script>
 
 </body>
