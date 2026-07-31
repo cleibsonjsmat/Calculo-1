@@ -3,13 +3,15 @@ name: Compilar LaTeX e Gerar Abas Dinamicas
 on:
   push:
     branches:
-      - main  # ou master, dependendo da sua branch principal
+      - main  # Se a sua branch principal for 'master', mude aqui para master
 
+# Permissões necessárias para o GitHub Pages publicar o site
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Garante que deploys simultâneos não se atropelem
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -17,31 +19,31 @@ concurrency:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    
-    # ESTA É A LINHA CHAVE QUE CORRIGE O ERRO DE MISSING ENVIRONMENT:
+
+    # Define o ambiente correto do GitHub Pages para evitar o erro de 'Missing environment'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout do código
+      - name: Baixar o código do repositório
         uses: actions/checkout@v4
 
-      - name: Compilar arquivos LaTeX para PDF
+      - name: Compilar todos os arquivos LaTeX (.tex) para PDF
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: |
-            Calculo1/**/*.tex
+          root_file: "*.tex"
+          glob_root_file: true
           continue_on_error: true
 
-      - name: Configurar GitHub Pages
+      - name: Configurar estrutura do GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload dos artefatos do site
+      - name: Compactar e preparar os arquivos compilados (HTML/PDF/TXT)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'  # Envia todo o conteúdo do repositório (com os PDFs gerados)
+          path: '.'
 
-      - name: Deploy no GitHub Pages
+      - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
