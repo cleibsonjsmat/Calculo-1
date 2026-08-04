@@ -1,0 +1,116 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable} % Permite que a tabela quebre entre páginas
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+
+% Cores Institucionais
+\definecolor{ifpegreen}{RGB}{14, 114, 52}
+\definecolor{lightgrey}{RGB}{245, 247, 248}
+\definecolor{darkgrey}{RGB}{60, 60, 60}
+
+\begin{document}
+
+% Cabeçalho Superior: Logomarca + Nome da Instituição
+\begin{center}
+    \begin{minipage}[c]{0.22\textwidth}
+        \centering
+        \includegraphics[height=3cm]{Imagens/logocaruaru.png} 
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{0.75\textwidth}
+        \centering
+        {\fontsize{11pt}{13pt}\selectfont \textbf{INSTITUTO FEDERAL DE PERNAMBUCO -- CAMPUS CARUARU}}\\[0.1cm]
+        {\small \textcolor{darkgrey}{\textbf{Cursos Técnicos Integrados}}}\\[0.1cm]
+        {\small \textbf{Disciplina:} Matemática VI \ \ \vline\ \ \ \textbf{Semestre Letivo:} 2026.2}\\[0.1cm]
+        {\small \textit{Prof. Cleibson José da Silva}}
+    \end{minipage}
+\end{center}
+
+\vspace{-0.2cm}
+\noindent\textcolor{ifpegreen}{\rule{\textwidth}{1pt}} % Linha divisória verde estilizada
+\vspace{0.2cm}
+
+% Título do Documento
+\begin{center}
+    {\Large \textbf{\textcolor{ifpegreen}{CRONOGRAMA DE AULAS -- SEMESTRE 2026.2 \\ (18 SEMANAS LETIVAS)}}}\\[0.15cm]
+    {\large \textbf{Turmas: Mecatrônica 6 (Quartas-feiras) \& Edificações 6 (Sextas-feiras)}}
+\end{center}
+
+\vspace{0.1cm}
+
+\noindent \textbf{Carga Horária / Frequência:} 2 aulas semanais por turma.\\
+\textbf{Ementa:} Números Complexos, Polinômios, Medidas de Tendência Central e Dispersão.\\
+\textbf{Estrutura de Avaliação:} Prova regular e Recuperação aplicadas integralmente dentro do período de consolidação de cada unidade. Trabalhos e exercícios de fixação podem ser aplicados ao longo do semestre, conforme necessidade.\\
+
+\vspace{0.3cm}
+
+\section*{\textcolor{ifpegreen}{Cronograma Semestral de Aulas}}
+
+\small
+\begin{longtable}{p{0.8cm} p{1.8cm} p{1.8cm} p{7.5cm} p{4.2cm}}
+
+% Cabeçalho da Primeira Página
+\toprule
+\textbf{Sem.} & \textbf{Quarta (Meca 6)} & \textbf{Sexta (Edif. 6)} & \textbf{Conteúdo Programático / Atividade} & \textbf{Observações / Calendário} \\
+\midrule
+\endhead
+
+% Cabeçalho das Páginas Seguintes (Quebra)
+\toprule
+\textbf{Sem.} & \textbf{Quarta (Mec.)} & \textbf{Sexta (Edif.)} & \textbf{Conteúdo Programático / Atividade} & \textbf{Observações / Calendário} \\
+\midrule
+\endhead
+
+% Rodapé de Transição de Página
+\midrule
+\multicolumn{5}{r}{\textit{Continua na próxima página...}} \\
+\endfoot
+
+% Rodapé Final
+\bottomrule
+\endlastfoot
+
+% Conteúdo da Tabela
+1ª & 29/07 & 31/07 & Apresentação da Disciplina e Plano de Ensino. Introdução aos Números Complexos: Unidade Imaginária $i$. & Início do Semestre: 27/07 \\
+\rowcolor{lightgrey}
+2ª & 05/08 & 07/08 & Forma Algébrica e Geométrica dos Complexos (Plano de Argand-Gauss). Operações Básicas. & \\
+3ª & 12/08 & 14/08 & Módulo e Argumento de um Número Complexo. Forma Trigonométrica (Polar). & \\
+\rowcolor{lightgrey}
+4ª & 19/08 & 21/08 & Operações na Forma Trigonométrica: Multiplicação, Divisão e Potenciação (Fórmula de De Moivre). & EXPO IFPE (18 a 21/08) \\
+5ª & 26/08 & 28/08 & Radiciação de Complexos. Introdução aos Polinômios: Definição, Grau e Valor Numérico. & Aniversário Campus (27/08) \\
+\rowcolor{lightgrey}
+6ª & 02/09 & 04/09 & Operações com Polinômios: Adição, Subtração, Multiplicação e Divisão (Método da Chave). & \\
+7ª & 09/09 & 11/09 & Dispositivo Prático de Briot-Ruffini, Teorema do Resto e Teorema de D'Alembert. Revisão da I Unidade. & Recesso: 14 e 15/09 (Padroeira) \\
+\rowcolor{lightgrey}
+8ª & 16/09 & 18/09 & \textbf{Avaliação Geral da I Unidade (PROVA I)} & Feira do Livro / Show Talentos \\
+9ª & 23/09 & 25/09 & \textbf{Avaliação de RECUPERAÇÃO da I Unidade} \& Consolidação de Notas & Consolidação Unid. I (22 a 28/09) \\
+\rowcolor{lightgrey}
+10ª & 30/09 & 02/10 & Introdução às Equações Polinomiais e Teorema Fundamental da Álgebra. & Início Oficial da II Unidade (29/09) \\
+11ª & 07/10 & 09/10 & Equações Polinomiais: Relações de Girard e Multiplicidade de Raízes. & Conselho de Classe Unid. I \\
+\rowcolor{lightgrey}
+12ª & 14/10 & 16/10 & Pesquisa de Raízes Racionais e Teorema das Raízes Racionais. Raízes Complexas. & Dia do Professor (15/10) \\
+13ª & 21/10 & 23/10 & Exercícios Aprofundados sobre Equações Polinomiais e Operações Algébricas. & SNCT (20 a 26/10) \\
+\rowcolor{lightgrey}
+14ª & 28/10 & 30/10 & Resolução de Problemas Avançados de Equações Polinomiais. & Recesso Serv. Público (28/10) \\
+15ª & 04/11 & 06/11 & Consolidação de Álgebra e Transição para Estatística Descritiva. & Feriado Finados (02/11) \\
+\rowcolor{lightgrey}
+16ª & 11/11 & 13/11 & \textbf{Estatística I:} Tabelas de Frequência, Representação Gráfica e Medidas de Tendência Central (Média, Moda e Mediana). & Bloco Único de Estatística \\
+17ª & 18/11 & 20/11 & \textbf{Estatística II:} Medidas de Dispersão (Amplitude, Variância, Desvio Padrão e Coeficiente de Variação). & Consciência Negra (20/11) \\
+\rowcolor{lightgrey}
+18ª & 25/11 & 27/11 & \textbf{Avaliação Geral da II Unidade (PROVA II)} & Fechamento de Conteúdo \\
+19ª & 02/12 & 04/12 & \textbf{Avaliação de RECUPERAÇÃO da II Unidade} \& Fechamento de Média & Fechamento de Notas \\
+\rowcolor{lightgrey}
+20ª & 09/12 & 11/12 & Consolidativo Final da II Unidade e Fechamento dos Diários & Consolidação Unid. II (10 a 16/12) \\
+21ª & 16/12 & 18/12 & Término do Semestre (16/12) / Exames Finais (19/12 a 23/12) & Exames Finais (19 a 23/12) \\
+
+\end{longtable}
+
+\end{document}
