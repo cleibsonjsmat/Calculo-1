@@ -1,84 +1,117 @@
-\documentclass[10pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
 \usepackage{lmodern}
-\usepackage[margin=1.5cm]{geometry}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{totpages}
+\usepackage{titlesec}
 \usepackage{booktabs}
-\usepackage{array}
 \usepackage{longtable}
 \usepackage{colortbl}
-\usepackage{xcolor}
-\usepackage{amsmath,amssymb}
 
-% Cores Institucionais
-\definecolor{ifpegreen}{RGB}{14, 114, 52}
-\definecolor{lightgrey}{RGB}{245, 247, 248}
-\definecolor{darkgrey}{RGB}{60, 60, 60}
+% Margens ajustadas: headheight em 2.6cm previne qualquer estouro da logo de 2cm
+\geometry{top=3.5cm, bottom=2.5cm, left=1.8cm, right=1.8cm, headheight=2.6cm}
+
+% Paleta de Cores Institucionais IFPE
+\definecolor{primary}{RGB}{14, 114, 52}     % Verde IFPE
+\definecolor{secondary}{RGB}{10, 80, 36}    % Verde Escuro Destaque
+\definecolor{darkgrey}{RGB}{60, 60, 60}     % Cinza Escuro
+\definecolor{lightgrey}{RGB}{245, 247, 248} % Cinza Claro para Tabela
+
+% Estilização dos Títulos de Seção
+\titleformat{\section}
+  {\color{primary}\normalfont\Large\bfseries}
+  {\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+  {\color{secondary}\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Configuração de Cabeçalho e Rodapé estilo Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+% Cabeçalho
+\fancyhead[L]{%
+  \includegraphics[height=2cm]{Imagens/logocaruaru.png}%
+}
+\fancyhead[R]{%
+  \small\sffamily
+  \textbf{Instituto Federal de Pernambuco -- Campus Caruaru} \\
+  \textcolor{primary}{Bacharelado em Engenharia Mecânica (PPC 2024)} \\
+  \textcolor{secondary}{Disciplina:} Cálculo Diferencial e Integral I \\
+  \textcolor{secondary}{Prof.:} Cleibson José da Silva
+}
+
+% Rodapé
+\fancyfoot[L]{\small\sffamily\color{gray}Cronograma Acadêmico -- Semestre 2026.2}
+\fancyfoot[R]{\small\sffamily\color{gray}Página \thepage\ de \ref{TotPages}}
+
+% Linhas divisórias do cabeçalho e rodapé
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\headrule}{{\color{primary}\hrule width\headwidth height \headrulewidth}}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=secondary,
+    urlcolor=secondary,
+    citecolor=primary
+}
 
 \begin{document}
 
-% Cabeçalho Superior: Logomarca + Nome da Instituição
+% Título Principal do Documento
 \begin{center}
-    \begin{minipage}[c]{0.22\textwidth}
-        \centering
-        \includegraphics[height=3cm]{Imagens/logocaruaru.png} 
-    \end{minipage}%
-    \hfill
-    \begin{minipage}[c]{0.75\textwidth}
-        \centering
-        {\fontsize{11pt}{13pt}\selectfont \textbf{INSTITUTO FEDERAL DE PERNAMBUCO -- CAMPUS CARUARU}}\\[0.1cm]
-        {\small \textcolor{darkgrey}{\textbf{Bacharelado em Engenharia Mecânica (PPC 2024)}}}\\[0.1cm]
-        {\small \textbf{Disciplina:} Cálculo Diferencial e Integral I \ \ \vline\ \ \ \textbf{Semestre Letivo:} 2026.2}\\[0.1cm]
-        {\small \textit{Prof. Cleibson José da Silva}}
-    \end{minipage}
+  \vspace*{-0.3cm}
+  {\Large\bfseries\color{primary} CRONOGRAMA DE AULAS -- SEMESTRE 2026.2} \\[0.15cm]
+  {\large\bfseries\color{darkgrey} Turma: Engenharia Mecânica (Quartas: 3 aulas | Quintas: 2 aulas)}
+  \vspace*{0.3cm}
+  \hrule height 1.5pt \color{primary}
 \end{center}
 
-\vspace{-0.2cm}
-\noindent\textcolor{ifpegreen}{\rule{\textwidth}{1pt}} % Linha divisória verde estilizada
 \vspace{0.2cm}
-
-% Título do Documento
-\begin{center}
-    {\Large \textbf{\textcolor{ifpegreen}{CRONOGRAMA DE AULAS -- SEMESTRE 2026.2 \\ (20 SEMANAS LETIVAS)}}}\\[0.15cm]
-    {\large \textbf{Turma: Engenharia Mecânica (Quartas: 3 aulas | Quintas: 2 aulas)}}
-\end{center}
-
-\vspace{0.1cm}
 
 \noindent \textbf{Carga Horária / Frequência:} 5 aulas semanais (3 aulas às quartas e 2 aulas às quintas).\\
 \textbf{Ementa:} Limites, Derivadas, Aplicações das Derivadas e Integrais como Antidiferenciação.\\
-\textbf{Estrutura de Avaliação:} Provas e Recuperações aplicadas sempre às quintas-feiras. A Recuperação de cada unidade ocorre integralmente dentro do período oficial de consolidação de notas do calendário acadêmico.\\
+\textbf{Estrutura de Avaliação:} Provas e Recuperações aplicadas sempre às quintas-feiras. A Recuperação de cada unidade ocorre integralmente dentro do período oficial de consolidação de notas do calendário acadêmico.
 
-\vspace{0.3cm}
+\vspace{0.4cm}
 
-\section*{\textcolor{ifpegreen}{Cronograma Semanal}}
+\section*{Cronograma Semanal}
 
 \small
-\begin{longtable}{p{0.8cm} p{1.8cm} p{1.8cm} p{7.5cm} p{4.2cm}}
+\begin{longtable}{p{0.8cm} p{1.8cm} p{1.8cm} p{7.7cm} p{4.3cm}}
 
 % Cabeçalho da Primeira Página
 \toprule
-\textbf{Sem.} & \textbf{Quarta (3h)} & \textbf{Quinta (2h)} & \textbf{Conteúdo Programático / Atividade} & \textbf{Observações / Calendário} \\
+\textbf{\color{primary}Sem.} & \textbf{\color{primary}Quarta (3h)} & \textbf{\color{primary}Quinta (2h)} & \textbf{\color{primary}Conteúdo Programático / Atividade} & \textbf{\color{primary}Observações / Calendário} \\
 \midrule
 \endhead
 
 % Cabeçalho das Páginas Seguintes (Quebra)
 \toprule
-\textbf{Sem.} & \textbf{Quarta (3h)} & \textbf{Quinta (2h)} & \textbf{Conteúdo Programático / Atividade} & \textbf{Observações / Calendário} \\
+\textbf{\color{primary}Sem.} & \textbf{\color{primary}Quarta (3h)} & \textbf{\color{primary}Quinta (2h)} & \textbf{\color{primary}Conteúdo Programático / Atividade} & \textbf{\color{primary}Observações / Calendário} \\
 \midrule
 \endhead
 
 % Rodapé de Transição de Página
 \midrule
-\multicolumn{5}{r}{\textit{Continua na próxima página...}} \\
+\multicolumn{5}{r}{\textit{\color{gray}Continua na próxima página...}} \\
 \endfoot
 
 % Rodapé Final
 \bottomrule
 \endlastfoot
 
-% Conteúdo
+% Conteúdo da Tabela
 1ª & 29/07 & 30/07 & Apresentação da Disciplina, Plano de Ensino e Revisão de Funções Elementares I (Domínio, Imagem, Gráficos e Funções Polinomiais/Racionais). & Início do Semestre: 27/07 \\
 \rowcolor{lightgrey}
 2ª & 05/08 & 06/08 & Revisão de Funções Elementares II (Trigonométricas, Exponenciais, Logarítmicas, Função Composta e Inversa). & \\

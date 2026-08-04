@@ -1,0 +1,239 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{totpages}
+\usepackage{titlesec}
+
+% Margens ajustadas: headheight em 2.6cm previne qualquer estouro da logo de 2cm
+\geometry{top=3.5cm, bottom=2.5cm, left=2.0cm, right=2.0cm, headheight=2.6cm}
+
+% Paleta de Cores Institucionais IFPE
+\definecolor{primary}{RGB}{14, 114, 52}     % Verde IFPE
+\definecolor{secondary}{RGB}{10, 80, 36}    % Verde Escuro Destaque
+\definecolor{darkgrey}{RGB}{50, 50, 50}     % Cinza Escuro
+\definecolor{bglight}{RGB}{245, 247, 250}   % Cinza Claro para Caixas
+
+% Estilização dos Títulos de Seção
+\titleformat{\section}
+  {\color{primary}\normalfont\Large\bfseries}
+  {\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+  {\color{secondary}\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Caixas Estilizadas com tcolorbox
+\tcbuselibrary{skins}
+
+\newtcolorbox{definicao}[1]{
+  colback=primary!5,
+  colframe=primary,
+  fonttitle=\bfseries\color{white},
+  title={#1},
+  arc=2mm,
+  boxrule=0.8pt,
+  enhanced
+}
+
+\newtcolorbox{exemplo}[1]{
+  colback=darkgrey!5,
+  colframe=darkgrey,
+  fonttitle=\bfseries\color{white},
+  title={#1},
+  arc=2mm,
+  boxrule=0.8pt,
+  enhanced
+}
+
+% Configuração de Cabeçalho e Rodapé estilo Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+% Cabeçalho
+\fancyhead[L]{%
+  \includegraphics[height=2cm]{Imagens/logocaruaru.png}%
+}
+\fancyhead[R]{%
+  \small\sffamily
+  \textbf{Instituto Federal de Pernambuco -- Campus Caruaru} \\
+  \textcolor{primary}{Bacharelado em Engenharia Mecânica} \\
+  \textcolor{secondary}{Disciplina:} Cálculo Diferencial e Integral I \\
+  \textcolor{secondary}{Prof.:} Cleibson José da Silva
+}
+
+% Rodapé
+\fancyfoot[L]{\small\sffamily\color{gray}Material de Apoio -- Revisão de Funções Elementares}
+\fancyfoot[R]{\small\sffamily\color{gray}Página \thepage\ de \ref{TotPages}}
+
+% Linhas divisórias do cabeçalho e rodapé
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\headrule}{{\color{primary}\hrule width\headwidth height \headrulewidth}}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=secondary,
+    urlcolor=secondary,
+    citecolor=primary
+}
+
+\begin{document}
+
+% Título Principal do Material
+\begin{center}
+  \vspace*{-0.3cm}
+  {\LARGE\bfseries\color{primary} Material de Apoio: Revisão de Funções Elementares} \\[0.2cm]
+  {\small\sffamily\color{gray} Semanas 1 e 2 -- Domínio, Imagem, Famílias de Funções, Inversão e Composição}
+  \vspace*{0.3cm}
+  \hrule height 1.5pt \color{primary}
+\end{center}
+
+\vspace{0.3cm}
+
+% ---------------------------------------------------
+\section*{1. Parte I: Domínio, Imagem e Leitura Gráfica}
+% ---------------------------------------------------
+
+\begin{definicao}{Conceitos Fundamentais de Funções}
+    Dada uma relação $f: A \to B$, dizemos que $f$ é uma \textbf{função} se a cada elemento $x \in A$ estiver associado um único elemento $y \in B$, representado por $y = f(x)$.
+    \begin{itemize}
+        \item \textbf{Domínio ($\text{Dom}(f)$)}: Conjunto de todos os valores de entrada $x \in A$ para os quais $f(x) \in \mathbb{R}$.
+        \item \textbf{Imagem ($\text{Im}(f)$)}: Conjunto de todos os valores de saída $y \in B$ efetivamente assumidos: 
+        $$\text{Im}(f) = \{y \in \mathbb{R} \mid \exists x \in \text{Dom}(f), f(x) = y\}$$
+    \end{itemize}
+\end{definicao}
+
+\noindent \textbf{Análise Gráfica e Monotonia:}
+\begin{itemize}
+    \item No plano cartesiano, o \textbf{Domínio} corresponde à projeção do gráfico sobre o eixo $x$, e a \textbf{Imagem} corresponde à projeção sobre o eixo $y$.
+    \item Uma função $f$ é \textbf{crescente} em um intervalo $I$ se $x_1 < x_2 \implies f(x_1) \le f(x_2)$, e \textbf{decrescente} se $x_1 < x_2 \implies f(x_1) \ge f(x_2)$.
+\end{itemize}
+
+\subsection*{Determinação do Domínio Real}
+Para expressões algébricas em $\mathbb{R}$, devemos respeitar três restrições operatórias fundamentais:
+\begin{enumerate}
+    \item \textbf{Denominadores}: Não podem ser nulos $\left(\frac{1}{g(x)} \implies g(x) \neq 0\right)$.
+    \item \textbf{Radicais de índice par}: O radicando deve ser não negativo $\left(\sqrt[2n]{g(x)} \implies g(x) \ge 0\right)$.
+    \item \textbf{Logaritmos}: O logaritmando deve ser estritamente positivo $\left(\ln(g(x)) \implies g(x) > 0\right)$.
+\end{enumerate}
+
+\begin{exemplo}{Exemplo 1: Determinação do Domínio (Exercício 2a da Lista 0)}
+    Determine o domínio real da função $f(x) = \frac{\sqrt{x+2}}{x-1}$.
+    
+    \tcblower
+    \textbf{Resolução:}
+    \begin{enumerate}
+        \item \textbf{Condição do numerador}: Como temos um radical de índice par ($\sqrt{x+2}$), o radicando não pode ser negativo:
+        $$x + 2 \ge 0 \implies x \ge -2$$
+        \item \textbf{Condição do denominador}: O denominador não pode ser nulo:
+        $$x - 1 \neq 0 \implies x \neq 1$$
+    \end{enumerate}
+    Combinando ambas as condições, temos que $x$ deve ser maior ou igual a $-2$, exceto o valor $1$.
+    $$\text{Dom}(f) = [-2, 1) \cup (1, +\infty)$$
+\end{exemplo}
+
+\begin{exemplo}{Exemplo 2: Função Teto e Imagem Restrita (Exercício 3c da Lista 0)}
+    A \textbf{função teto} $\lceil x \rceil$ associa a cada $x \in \mathbb{R}$ o menor inteiro maior ou igual a $x$. Determine a imagem de $h(x) = \lceil x \rceil$ no domínio restrito $x \in [-1, 2]$.
+
+    \tcblower
+    \textbf{Resolução:} Analisando por subintervalos dentro de $[-1, 2]$:
+    \begin{itemize}
+        \item Para $x = -1 \implies h(-1) = \lceil -1 \rceil = -1$.
+        \item Para $x \in (-1, 0] \implies h(x) = \lceil x \rceil = 0$.
+        \item Para $x \in (0, 1] \implies h(x) = \lceil x \rceil = 1$.
+        \item Para $x \in (1, 2] \implies h(x) = \lceil x \rceil = 2$.
+    \end{itemize}
+    Portanto, o conjunto imagem é formado pelos inteiros isolados: $\text{Im}(h) = \{-1, 0, 1, 2\}$.
+\end{exemplo}
+
+% ---------------------------------------------------
+\section*{2. Parte II: Famílias de Funções, Inversão e Composição}
+% ---------------------------------------------------
+
+\begin{definicao}{Principais Famílias de Funções Elementares}
+    \begin{itemize}
+        \item \textbf{Polinomiais}: $P(x) = a_n x^n + \dots + a_0 \implies \text{Dom}(P) = \mathbb{R}$.
+        \item \textbf{Trigonométricas Básicas}: $f(x) = \sin(x)$ e $g(x) = \cos(x)$ têm $\text{Dom} = \mathbb{R}$ e $\text{Im} = [-1, 1]$. Já $h(x) = \tan(x)$ tem $\text{Dom} = \{x \in \mathbb{R} \mid x \neq \frac{\pi}{2} + k\pi, k \in \mathbb{Z}\}$.
+        \item \textbf{Exponenciais e Logarítmicas}: $f(x) = a^x$ com $\text{Dom} = \mathbb{R}$ e $\text{Im} = (0, +\infty)$. A função logarítmica $g(x) = \log_a(x)$ tem $\text{Dom} = (0, +\infty)$ e $\text{Im} = \mathbb{R}$.
+    \end{itemize}
+\end{definicao}
+
+\subsection*{Bijetividade e Função Inversa}
+Uma função $f: A \to B$ admite \textbf{função inversa} $f^{-1}: B \to A$ se, e somente se, for \textbf{bijetora} (simultaneamente injetora e sobrejetora). A propriedade fundamental da inversa é:
+$$f(x) = y \iff f^{-1}(y) = x$$
+
+\begin{exemplo}{Exemplo 3: Obtenção da Função Inversa (Exercício 4b da Lista 0)}
+    Seja $g(x) = x^2 - 4x$ definida para a restrição de domínio $x \ge 2$. Encontre a lei de $g^{-1}(x)$.
+
+    \tcblower
+    \textbf{Resolução:}
+    \begin{enumerate}
+        \item Escrevemos $y = x^2 - 4x$ e completamos o quadrado perfeito:
+        $$y = (x^2 - 4x + 4) - 4 \implies y = (x - 2)^2 - 4$$
+        \item Isolamos a variável $x$:
+        $$y + 4 = (x - 2)^2 \implies x - 2 = \sqrt{y + 4}$$
+        \textit{(Como $x \ge 2$, adotamos a raiz com sinal positivo)}.
+        \item $x = 2 + \sqrt{y + 4}$. Trocando as variáveis $x \leftrightarrow y$:
+        $$g^{-1}(x) = 2 + \sqrt{x + 4}$$
+    \end{enumerate}
+\end{exemplo}
+
+\begin{exemplo}{Exemplo 4: Aplicação Prática de Inversão (Exercício 5 da Lista 0)}
+    A conversão de Celsius ($C$) para Fahrenheit ($F$) é dada por $T(C) = \frac{9}{5}C + 32$.
+    \begin{enumerate}
+        \item Encontre a função inversa $T^{-1}(F)$.
+        \item Calcule o valor em Celsius quando $T(C) = 100^\circ\text{F}$.
+    \end{enumerate}
+
+    \tcblower
+    \textbf{Resolução:}
+    \begin{enumerate}
+        \item Isolamos $C$ em função de $F$:
+        $$F = \frac{9}{5}C + 32 \implies F - 32 = \frac{9}{5}C \implies C = \frac{5}{9}(F - 32)$$
+        Logo, a função inversa é $T^{-1}(F) = \frac{5}{9}(F - 32)$.
+        \item Aplicando $F = 100^\circ\text{F}$:
+        $$C = \frac{5}{9}(100 - 32) = \frac{5}{9}(68) = \frac{340}{9} \approx 37{,}78^\circ\text{C}$$
+    \end{enumerate}
+\end{exemplo}
+
+\subsection*{Composição de Funções}
+Dadas $f$ e $g$, a função composta $f \circ g$ é dada por $(f \circ g)(x) = f(g(x))$. O domínio da composta é:
+$$\text{Dom}(f \circ g) = \{x \in \text{Dom}(g) \mid g(x) \in \text{Dom}(f)\}$$
+
+\begin{exemplo}{Exemplo 5: Decomposição de Funções (Exercício 7 da Lista 0)}
+    Se $h(x) = (x^3 + 1)^2$, encontre duas funções $f$ e $g$ tais que $h = f \circ g$.
+
+    \tcblower
+    \textbf{Resolução:}
+    Identificamos a operação "interna" e a "externa":
+    \begin{itemize}
+        \item Função interna: $g(x) = x^3 + 1$.
+        \item Função externa: $f(x) = x^2$.
+    \end{itemize}
+    \textbf{Verificação}: $(f \circ g)(x) = f(g(x)) = f(x^3 + 1) = (x^3 + 1)^2 = h(x)$.
+\end{exemplo}
+
+\begin{exemplo}{Exemplo 6: Exercício Integrador de Composição (Exercício 6 da Lista 0)}
+    Dadas $f(x) = \sqrt{x-1}$ e $g(x) = x^2 + 2$, calcule $(f \circ g)(3)$, $(g \circ f)(5)$ e o domínio de $f \circ g$.
+
+    \tcblower
+    \textbf{Resolução:}
+    \begin{enumerate}
+        \item Para $(f \circ g)(3)$: Primeiro calculamos $g(3) = 3^2 + 2 = 11$. Em seguida, $f(11) = \sqrt{11-1} = \sqrt{10}$.
+        \item Para $(g \circ f)(5)$: Primeiro calculamos $f(5) = \sqrt{5-1} = 2$. Em seguida, $g(2) = 2^2 + 2 = 18$.
+        \item Para o \textbf{Domínio de $f \circ g$}: Expressando a lei da composta:
+        $$(f \circ g)(x) = f(g(x)) = \sqrt{(x^2 + 2) - 1} = \sqrt{x^2 + 1}$$
+        Como $x^2 \ge 0 \implies x^2 + 1 \ge 1 > 0$ para qualquer $x \in \mathbb{R}$, o termo dentro da raiz quadrada é sempre estritamente positivo. Logo, $\text{Dom}(f \circ g) = \mathbb{R} = (-\infty, +\infty)$.
+    \end{enumerate}
+\end{exemplo}
+
+\end{document}
