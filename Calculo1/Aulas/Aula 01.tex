@@ -1,0 +1,289 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+
+% Tema e Cores Institucionais
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\definecolor{ifpegreen}{RGB}{14, 114, 52}
+\definecolor{ifpegreendark}{RGB}{10, 80, 36}
+\definecolor{darkgrey}{RGB}{50, 50, 50}
+
+\setbeamercolor{palette primary}{bg=ifpegreen, fg=white}
+\setbeamercolor{palette secondary}{bg=ifpegreendark, fg=white}
+\setbeamercolor{palette tertiary}{bg=darkgrey, fg=white}
+\setbeamercolor{structure}{fg=ifpegreen}
+\setbeamercolor{title}{bg=ifpegreen, fg=white}
+\setbeamercolor{block title}{bg=ifpegreen, fg=white}
+\setbeamercolor{block body}{bg=ifpegreen!10, fg=black}
+\setbeamercolor{block title example}{bg=darkgrey, fg=white}
+\setbeamercolor{block body example}{bg=darkgrey!10, fg=black}
+
+\title[Cálculo I -- Aula 01]{Aula 01: Revisão Geral de Funções Elementares}
+\subtitle{Domínio, Imagem, Famílias de Funções, Inversão e Composição}
+\author[Prof. Cleibson]{Prof. Cleibson José da Silva}
+\institute[IFPE]{Instituto Federal de Pernambuco -- Campus Caruaru\\ Bacharelado em Engenharia Mecânica}
+\date{Semestre Letivo 2026.2}
+
+\begin{document}
+
+% Transição suave padrão para todos os slides
+\transdissolve
+
+% Slide de Título
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Sumário Geral
+\begin{frame}{Estrutura Completa da Aula (Semanas 1 e 2)}
+    \tableofcontents
+\end{frame}
+
+% ===================================================
+% PARTE I: SEMANA 1 - CONCEITOS FUNDAMENTAIS
+% ===================================================
+\section{Parte I (Semana 1): Domínio, Imagem e Leitura Gráfica}
+
+\begin{frame}{Domínio, Imagem e Leitura de Gráficos}
+    \transblindshorizontal % Efeito de transição especial no início de seção
+    \begin{block}{Conceitos Fundamentais}
+        Dada uma função $f: A \to B$:
+        \begin{itemize}
+            \item \textbf{Domínio $\text{Dom}(f)$}: Conjunto de todos os valores $x \in A$ para os quais $f(x) \in \mathbb{R}$.
+            \pause
+            \item \textbf{Imagem $\text{Im}(f)$}: Conjunto dos valores $y \in B$ efetivamente atingidos: $\text{Im}(f) = \{y \in \mathbb{R} \mid \exists x \in \text{Dom}(f), f(x) = y\}$.
+        \end{itemize}
+    \end{block}
+
+    \pause
+    \begin{exampleblock}{Análise Gráfica}
+        \begin{itemize}
+            \item O \textbf{Domínio} é a projeção ortogonal do gráfico no eixo $x$.
+            \item A \textbf{Imagem} é a projeção ortogonal do gráfico no eixo $y$.
+            \pause
+            \item \textbf{Monotonia}: $f$ é crescente se $x_1 < x_2 \implies f(x_1) \le f(x_2)$; e decrescente se $x_1 < x_2 \implies f(x_1) \ge f(x_2)$.
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Determinação do Domínio Real}
+    Ao determinar o domínio de uma expressão em $\mathbb{R}$, observamos as restrições operatórias algébricas:
+    \vspace{0.2cm}
+    \begin{enumerate}
+        \item \textbf{Denominadores}: $g(x) \neq 0$ em $\frac{1}{g(x)}$.
+        \pause
+        \item \textbf{Radicais de índice par}: $g(x) \ge 0$ em $\sqrt[2n]{g(x)}$.
+        \pause
+        \item \textbf{Logaritmos}: $g(x) > 0$ em $\ln(g(x))$.
+    \end{enumerate}
+
+    \pause
+    \begin{block}{Exemplo Modelo (Exercício 2a da Lista 0)}
+        Determine o domínio de $f(x) = \frac{\sqrt{x+2}}{x-1}$.
+        \pause
+        \begin{itemize}
+            \item Numerador: $x + 2 \ge 0 \implies x \ge -2$.
+            \pause
+            \item Denominador: $x - 1 \neq 0 \implies x \neq 1$.
+            \pause
+            \item \textbf{Conclusão}: $\text{Dom}(f) = [-2, 1) \cup (1, +\infty)$.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Funções Especiais e Conjunto Imagem}
+    \begin{block}{Função Teto $\lceil x \rceil$}
+        A função teto associa a cada número real $x$ o menor inteiro maior ou igual a $x$:
+        $$\lceil x \rceil = \min\{n \in \mathbb{Z} \mid n \ge x\}$$
+    \end{block}
+
+    \pause
+    \begin{exampleblock}{Exemplo Modelo (Exercício 3c da Lista 0)}
+        Determine a imagem de $h(x) = \lceil x \rceil$ no domínio restrito $x \in [-1, 2]$.
+        \pause
+        \begin{itemize}
+            \item $x = -1 \implies h(-1) = -1$.
+            \pause
+            \item $x \in (-1, 0] \implies h(x) = 0$.
+            \pause
+            \item $x \in (0, 1] \implies h(x) = 1$.
+            \pause
+            \item $x \in (1, 2] \implies h(x) = 2$.
+            \pause
+            \item \textbf{Imagem}: $\text{Im}(h) = \{-1, 0, 1, 2\}$.
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+% ===================================================
+% PARTE II: SEMANA 2 - FAMÍLIAS DE FUNÇÕES, INVERSÃO E COMPOSIÇÃO
+% ===================================================
+\section{Parte II (Semana 2): Famílias de Funções, Inversão e Composição}
+
+\begin{frame}{Revisão das Famílias de Funções Elementares}
+    \transblindshorizontal
+    \begin{block}{1. Funções Polinomiais e Racionais}
+        \begin{itemize}
+            \item $P(x) = a_n x^n + \dots + a_1 x + a_0 \implies \text{Dom}(P) = \mathbb{R}$.
+            \item $R(x) = \frac{P(x)}{Q(x)} \implies \text{Dom}(R) = \{x \in \mathbb{R} \mid Q(x) \neq 0\}$.
+        \end{itemize}
+    \end{block}
+
+    \pause
+    \begin{block}{2. Funções Trigonométricas Básicas}
+        \begin{itemize}
+            \item $f(x) = \sin(x)$ e $g(x) = \cos(x) \implies \text{Dom} = \mathbb{R}, \ \text{Im} = [-1, 1]$.
+            \item $h(x) = \tan(x) = \frac{\sin(x)}{\cos(x)} \implies \text{Dom} = \{x \in \mathbb{R} \mid x \neq \frac{\pi}{2} + k\pi, k \in \mathbb{Z}\}$.
+        \end{itemize}
+    \end{block}
+
+    \pause
+    \begin{block}{3. Funções Exponenciais e Logarítmicas}
+        \begin{itemize}
+            \item $f(x) = a^x \ (a > 0, a \neq 1) \implies \text{Dom} = \mathbb{R}, \ \text{Im} = (0, +\infty)$.
+            \item $g(x) = \log_a(x) \ (a > 0, a \neq 1) \implies \text{Dom} = (0, +\infty), \ \text{Im} = \mathbb{R}$.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Inversão e Bijetividade}
+    \begin{itemize}
+        \item \textbf{Injetora}: Elementos distintos geram imagens distintas ($f(x_1) = f(x_2) \implies x_1 = x_2$).
+        \pause
+        \item \textbf{Sobrejetora}: O contradomínio é igual à imagem ($\text{Im}(f) = B$).
+        \pause
+        \item \textbf{Bijetora}: É simultaneamente injetora e sobrejetora.
+    \end{itemize}
+
+    \pause
+    \begin{block}{Existência da Função Inversa $f^{-1}(x)$}
+        Uma função $f$ admite inversa $f^{-1}$ se, e somente se, for bijetora.
+        $$f(x) = y \iff f^{-1}(y) = x$$
+    \end{block}
+
+    \pause
+    \begin{exampleblock}{Exemplo com Restrição de Domínio (Exercício 4b da Lista 0)}
+        Seja $g(x) = x^2 - 4x$ para $x \ge 2$. Encontre $g^{-1}(x)$.
+        \pause
+        \begin{enumerate}
+            \item Complete o quadrado: $y = (x - 2)^2 - 4 \implies y + 4 = (x - 2)^2$.
+            \pause
+            \item Isole $x$: $x - 2 = \sqrt{y + 4}$ (positivo pois $x \ge 2$).
+            \pause
+            \item $x = 2 + \sqrt{y + 4} \implies g^{-1}(x) = 2 + \sqrt{x + 4}$.
+        \end{enumerate}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Aplicação Prática: Conversão de Unidades}
+    \begin{block}{Conversão de Temperatura (Exercício 5 da Lista 0)}
+        A conversão de Celsius ($C$) para Fahrenheit ($F$) é dada por:
+        $$T(C) = \frac{9}{5}C + 32$$
+    \end{block}
+
+    \pause
+    \begin{exampleblock}{Resolução}
+        \begin{enumerate}
+            \item \textbf{Encontrar $T^{-1}(F)$}:
+            $$F = \frac{9}{5}C + 32 \implies F - 32 = \frac{9}{5}C \implies C = \frac{5}{9}(F - 32)$$
+            Logo, $T^{-1}(F) = \frac{5}{9}(F - 32)$.
+
+            \pause
+            \item \textbf{Calcular $C$ para $T(C) = 100^\circ\text{F}$}:
+            $$C = \frac{5}{9}(100 - 32) = \frac{5}{9}(68) = \frac{340}{9} \approx 37{,}78^\circ\text{C}$$
+        \end{enumerate}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Composição de Funções}
+    \begin{block}{Definição de $(f \circ g)(x)$}
+        Dadas duas funções $f$ e $g$, a função composta $f \circ g$ é definida por:
+        $$(f \circ g)(x) = f(g(x))$$
+    \end{block}
+
+    \pause
+    \begin{block}{Domínio da Composta}
+        $$\text{Dom}(f \circ g) = \{x \in \text{Dom}(g) \mid g(x) \in \text{Dom}(f)\}$$
+    \end{block}
+
+    \pause
+    \begin{exampleblock}{Decomposição de Funções (Exercício 7 da Lista 0)}
+        Se $h(x) = (x^3 + 1)^2$, encontre $f$ e $g$ tais que $h = f \circ g$.
+        \pause
+        \begin{itemize}
+            \item Função interna: $g(x) = x^3 + 1$.
+            \pause
+            \item Função externa: $f(x) = x^2$.
+            \pause
+            \item Verificação: $(f \circ g)(x) = f(g(x)) = f(x^3 + 1) = (x^3 + 1)^2 = h(x)$.
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Exercício Integrador (Exercício 6 da Lista 0)}
+    Dadas $f(x) = \sqrt{x-1}$ e $g(x) = x^2 + 2$:
+
+    \begin{columns}
+        \column{0.5\textwidth}
+        \pause
+        \begin{block}{Cálculo de $(f \circ g)(3)$}
+            $$g(3) = 3^2 + 2 = 11$$
+            $$(f \circ g)(3) = f(11) = \sqrt{11 - 1} = \mathbf{\sqrt{10}}$$
+        \end{block}
+
+        \pause
+        \begin{block}{Cálculo de $(g \circ f)(5)$}
+            $$f(5) = \sqrt{5 - 1} = 2$$
+            $$(g \circ f)(5) = g(2) = 2^2 + 2 = \mathbf{18}$$
+        \end{block}
+
+        \column{0.5\textwidth}
+        \pause
+        \begin{block}{Domínio de $f \circ g$}
+            \begin{itemize}
+                \item $(f \circ g)(x) = \sqrt{(x^2 + 2) - 1} = \sqrt{x^2 + 1}$.
+                \pause
+                \item Como $x^2 + 1 \ge 1 > 0$ para todo $x \in \mathbb{R}$, a raiz sempre existe no conjunto dos reais.
+                \pause
+                \item \textbf{Domínio}: $\text{Dom}(f \circ g) = \mathbb{R} = (-\infty, +\infty)$.
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+% ===================================================
+% ENCERRAMENTO E ORIENTAÇÕES
+% ===================================================
+\section{Atividade Prática}
+
+\begin{frame}{Atividade Prática em Sala}
+    \transblindshorizontal
+    \begin{center}
+        \Large \textbf{Trabalho Autônomo e Resolução de Dúvidas}
+        \vspace{0.5cm}
+
+        \small
+        Utilizem o restante do tempo para finalizar a resolução da **Lista 0**.
+
+        \pause
+        \vspace{0.3cm}
+        \begin{block}{Pontos Chave da Lista 0}
+            \begin{itemize}
+                \item \textbf{Questão 1}: Atenção aos intervalos abertos e fechados na leitura gráfica.
+                \pause
+                \item \textbf{Questão 2b}: Lembre-se da restrição do logaritmo ($4-x^2 > 0$) e do denominador ($|x| \neq 0$).
+                \pause
+                \item \textbf{Questão 4c}: Na inversão de exponenciais $e^{u}$, aplique o logaritmo natural.
+            \end{itemize}
+        \end{block}
+    \end{center}
+\end{frame}
+
+\end{document}
